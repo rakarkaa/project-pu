@@ -4,10 +4,9 @@
         <div class="sb-sidenav-menu">
             <div class="nav">
 
-                <!-- HEADING -->
+                {{-- MENU UTAMA --}}
                 <div class="sb-sidenav-menu-heading">Menu Utama</div>
 
-                <!-- DASHBOARD -->
                 <a class="nav-link" href="{{ route('dashboard') }}">
                     <div class="sb-nav-link-icon">
                         <i class="fas fa-tachometer-alt"></i>
@@ -15,11 +14,12 @@
                     Dashboard
                 </a>
 
-                <!-- MASTER -->
-                <div class="sb-sidenav-menu-heading">Master Data</div>
+                {{-- MASTER --}}
+                <div class="sb-sidenav-menu-heading">Master</div>
 
                 <a class="nav-link collapsed" href="#" data-bs-toggle="collapse"
-                   data-bs-target="#collapseMaster" aria-expanded="false">
+                   data-bs-target="#collapseMaster" aria-expanded="false"
+                   aria-controls="collapseMaster">
                     <div class="sb-nav-link-icon">
                         <i class="fas fa-database"></i>
                     </div>
@@ -29,20 +29,21 @@
                     </div>
                 </a>
 
-                <div class="collapse" id="collapseMaster" data-bs-parent="#sidenavAccordion">
+                <div class="collapse" id="collapseMaster"
+                     data-bs-parent="#sidenavAccordion">
                     <nav class="sb-sidenav-menu-nested nav">
-                        <a class="nav-link" href="#">
-                            Master Pelatihan Kepemimpinan
-                        </a>
-                        <a class="nav-link" href="#">
-                            Master Pelatihan Fungsional
+                        <a class="nav-link" href="{{ route('pelatihan.index') }}">
+                            Master Pelatihan
                         </a>
                     </nav>
                 </div>
 
-                <!-- KELAS -->
+                {{-- KELAS --}}
+                <div class="sb-sidenav-menu-heading">Kelas</div>
+
                 <a class="nav-link collapsed" href="#" data-bs-toggle="collapse"
-                   data-bs-target="#collapseKelas" aria-expanded="false">
+                   data-bs-target="#collapseKelas" aria-expanded="false"
+                   aria-controls="collapseKelas">
                     <div class="sb-nav-link-icon">
                         <i class="fas fa-chalkboard-teacher"></i>
                     </div>
@@ -52,18 +53,26 @@
                     </div>
                 </a>
 
-                <div class="collapse" id="collapseKelas" data-bs-parent="#sidenavAccordion">
+                <div class="collapse" id="collapseKelas"
+                     data-bs-parent="#sidenavAccordion">
                     <nav class="sb-sidenav-menu-nested nav">
-                        <a class="nav-link" href="#">Kelas Kepemimpinan</a>
-                        <a class="nav-link" href="#">Kelas Fungsional</a>
+                        <a class="nav-link" href="#">
+                            Kelas Kepemimpinan
+                        </a>
+                        <a class="nav-link" href="#">
+                            Kelas Fungsional
+                        </a>
                     </nav>
                 </div>
 
-                <!-- DAFTAR PANTAU -->
+                {{-- DAFTAR PANTAU --}}
+                <div class="sb-sidenav-menu-heading">Daftar Pantau</div>
+
                 <a class="nav-link collapsed" href="#" data-bs-toggle="collapse"
-                   data-bs-target="#collapsePantau" aria-expanded="false">
+                   data-bs-target="#collapsePantau" aria-expanded="false"
+                   aria-controls="collapsePantau">
                     <div class="sb-nav-link-icon">
-                        <i class="fas fa-list-check"></i>
+                        <i class="fas fa-clipboard-check"></i>
                     </div>
                     Daftar Pantau
                     <div class="sb-sidenav-collapse-arrow">
@@ -71,14 +80,19 @@
                     </div>
                 </a>
 
-                <div class="collapse" id="collapsePantau" data-bs-parent="#sidenavAccordion">
+                <div class="collapse" id="collapsePantau"
+                     data-bs-parent="#sidenavAccordion">
                     <nav class="sb-sidenav-menu-nested nav">
-                        <a class="nav-link" href="#">Pantau Kepemimpinan</a>
-                        <a class="nav-link" href="#">Pantau Fungsional</a>
+                        <a class="nav-link" href="#">
+                            Kepemimpinan
+                        </a>
+                        <a class="nav-link" href="#">
+                            Fungsional
+                        </a>
                     </nav>
                 </div>
 
-                <!-- MONITORING -->
+                {{-- MONITORING --}}
                 <div class="sb-sidenav-menu-heading">Monitoring</div>
 
                 <a class="nav-link" href="#">
@@ -91,10 +105,5 @@
             </div>
         </div>
 
-        <!-- FOOTER SIDEBAR -->
-        <div class="sb-sidenav-footer">
-            <div class="small">Login sebagai:</div>
-            Admin
-        </div>
     </nav>
 </div>

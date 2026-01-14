@@ -5,39 +5,50 @@
     <title>Project-PU</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Font Awesome (ASLI TEMPLATE) -->
+    <!-- Font Awesome -->
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
 
     <!-- SB Admin CSS -->
     <link href="{{ asset('assets/css/styles.css') }}" rel="stylesheet">
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet"
+          href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
 </head>
 
 <body class="sb-nav-fixed">
 
-    {{-- Navbar --}}
-    @include('partials.navbar')
+@include('partials.navbar')
 
-    <div id="layoutSidenav">
+<div id="layoutSidenav">
+    @include('partials.sidebar')
 
-        {{-- Sidebar --}}
-        @include('partials.sidebar')
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                @yield('content')
+            </div>
+        </main>
 
-        <div id="layoutSidenav_content">
-            <main>
-                <div class="container-fluid px-4">
-                    @yield('content')
-                </div>
-            </main>
-
-            {{-- Footer --}}
-            @include('partials.footer')
-        </div>
+        @include('partials.footer')
     </div>
+</div>
 
-    <!-- Bootstrap 5 JS (CDN, ASLI TEMPLATE) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Bootstrap 5 -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- SB Admin JS -->
-    <script src="{{ asset('assets/js/scripts.js') }}"></script>
+<!-- jQuery (WAJIB) -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- DataTables -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+<!-- SB Admin -->
+<script src="{{ asset('assets/js/scripts.js') }}"></script>
+
+// Tambahan Script Khusus Halaman
+@stack('scripts')
+
 </body>
 </html>
