@@ -23,6 +23,7 @@ class PelatihanController extends Controller
         $request->validate([
             'nama_pelatihan' => 'required',
             'jenis_pelatihan' => 'required',
+            'keterangan' => 'required',
             'tahun' => 'required|digits:4',
         ]);
 
@@ -45,6 +46,7 @@ class PelatihanController extends Controller
         $request->validate([
             'nama_pelatihan' => 'required',
             'jenis_pelatihan' => 'required',
+            'keterangan' => 'required',
             'tahun' => 'required|digits:4',
         ]);
 

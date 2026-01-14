@@ -10,11 +10,18 @@
 {{-- ========================= --}}
 {{-- CARD 1 : TABEL CRUD --}}
 {{-- ========================= --}}
-<div class="card mb-4">
-    <div class="card-header">
-        <i class="fas fa-table me-1"></i>
-        Data Master Pelatihan
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table me-1"></i>
+            Data Master Pelatihan
+        </div>
+
+    <div class="d-flex justify-content-start mt-3 px-3">
+        <a href="{{ route('pelatihan.create') }}" class="btn btn-primary btn-sm">
+            <i class="fas fa-plus"></i> Tambah Pelatihan
+        </a>
     </div>
+
 
     <div class="card-body">
         <div class="table-responsive">
@@ -25,7 +32,6 @@
                         <th>Nama Pelatihan</th>
                         <th>Jenis</th>
                         <th>Tahun</th>
-                        <th>Penyelenggara</th>
                         <th width="15%" class="text-center">Aksi</th>
                     </tr>
                 </thead>
@@ -40,7 +46,6 @@
                                 </span>
                             </td>
                             <td>{{ $item->tahun }}</td>
-                            <td>{{ $item->penyelenggara }}</td>
                             <td class="text-center">
                                 <a href="{{ route('pelatihan.edit', $item->id) }}"
                                    class="btn btn-sm btn-warning">
@@ -89,6 +94,7 @@
                         <th>Pelatihan</th>
                         <th>Jenis</th>
                         <th>Tahun</th>
+                        <th>Keterangan</th>
                         <th>Status Umum</th>
                     </tr>
                 </thead>
@@ -107,6 +113,7 @@
                                 </span>
                             </td>
                             <td>{{ $item->tahun }}</td>
+                            <td>{{ $item->keterangan }}</td>
                             <td>
                                 <span class="badge bg-success">
                                     Terdata
@@ -124,8 +131,8 @@
 <script>
     $(document).ready(function () {
         $('#tablePelatihan').DataTable({
-            pageLength: 10,
-            lengthMenu: [5, 10, 25, 50],
+            pageLength: 5,
+            lengthMenu: [5, 10, 25, 50, 100],
             ordering: true,
             searching: true,
             language: {
