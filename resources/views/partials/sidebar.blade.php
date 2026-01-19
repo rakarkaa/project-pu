@@ -18,8 +18,8 @@
                 <div class="sb-sidenav-menu-heading">Master</div>
 
                 <a class="nav-link collapsed" href="#" data-bs-toggle="collapse"
-                   data-bs-target="#collapseMaster" aria-expanded="false"
-                   aria-controls="collapseMaster">
+                data-bs-target="#collapseMaster" aria-expanded="false"
+                aria-controls="collapseMaster">
                     <div class="sb-nav-link-icon">
                         <i class="fas fa-database"></i>
                     </div>
@@ -29,14 +29,22 @@
                     </div>
                 </a>
 
-                <div class="collapse" id="collapseMaster"
-                     data-bs-parent="#sidenavAccordion">
+                <div class="collapse" id="collapseMaster" data-bs-parent="#sidenavAccordion">
                     <nav class="sb-sidenav-menu-nested nav">
+
                         <a class="nav-link" href="{{ route('pelatihan.index') }}">
                             Master Pelatihan
                         </a>
+
+                        @if(auth()->check() && auth()->user()->isAdmin())
+                            <a class="nav-link" href="{{ route('users.index') }}">
+                                Master Users
+                            </a>
+                        @endif
+
                     </nav>
                 </div>
+
 
                 {{-- KELAS --}}
                 <div class="sb-sidenav-menu-heading">Kelas</div>
