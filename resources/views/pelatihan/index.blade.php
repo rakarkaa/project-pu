@@ -16,11 +16,13 @@
             Data Master Pelatihan
         </div>
 
+    @if(auth()->user()->isAdmin())
     <div class="d-flex justify-content-start mt-3 px-3">
         <a href="{{ route('pelatihan.create') }}" class="btn btn-primary btn-sm">
             <i class="fas fa-plus"></i> Tambah Pelatihan
         </a>
     </div>
+    @endif
 
 
     <div class="card-body">
@@ -32,7 +34,9 @@
                         <th>Nama Pelatihan</th>
                         <th>Jenis</th>
                         <th>Tahun</th>
+                        @if(auth()->user()->isAdmin())
                         <th width="15%" class="text-center">Aksi</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
@@ -46,16 +50,17 @@
                                 </span>
                             </td>
                             <td>{{ $item->tahun }}</td>
+                            @if(auth()->user()->isAdmin())
                             <td class="text-center">
                                 <a href="{{ route('pelatihan.edit', $item->id) }}"
-                                   class="btn btn-sm btn-warning">
+                                class="btn btn-sm btn-warning">
                                     <i class="fas fa-edit"></i>
                                 </a>
 
                                 <form action="{{ route('pelatihan.destroy', $item->id) }}"
-                                      method="POST"
-                                      class="d-inline"
-                                      onsubmit="return confirm('Yakin hapus data ini?')">
+                                    method="POST"
+                                    class="d-inline"
+                                    onsubmit="return confirm('Yakin hapus data ini?')">
                                     @csrf
                                     @method('DELETE')
                                     <button class="btn btn-sm btn-danger">
@@ -63,6 +68,8 @@
                                     </button>
                                 </form>
                             </td>
+                            @endif
+
                         </tr>
                     @empty
                         <tr>

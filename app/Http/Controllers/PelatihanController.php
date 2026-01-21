@@ -15,11 +15,18 @@ class PelatihanController extends Controller
 
     public function create()
     {
+        if (!auth()->user()->isAdmin()) {
+            abort(403);
+        }
+
         return view('pelatihan.create');
     }
 
     public function store(Request $request)
     {
+        if (!auth()->user()->isAdmin()) {
+            abort(403);
+        }
         $request->validate([
             'nama_pelatihan' => 'required',
             'jenis_pelatihan' => 'required',
@@ -35,12 +42,20 @@ class PelatihanController extends Controller
 
     public function edit($id)
     {
+        if (!auth()->user()->isAdmin()) {
+            abort(403);
+        }
+
         $pelatihan = Pelatihan::findOrFail($id);
         return view('pelatihan.edit', compact('pelatihan'));
     }
 
     public function update(Request $request, $id)
     {
+        if (!auth()->user()->isAdmin()) {
+            abort(403);
+        }
+
         $pelatihan = Pelatihan::findOrFail($id);
 
         $request->validate([
@@ -58,6 +73,10 @@ class PelatihanController extends Controller
 
     public function destroy($id)
     {
+        if (!auth()->user()->isAdmin()) {
+            abort(403);
+        }
+
         Pelatihan::findOrFail($id)->delete();
 
         return redirect()->route('pelatihan.index')
