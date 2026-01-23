@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Pelatihan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PelatihanController extends Controller
 {
@@ -15,18 +16,16 @@ class PelatihanController extends Controller
 
     public function create()
     {
-        if (!auth()->user()->isAdmin()) {
-            abort(403);
-        }
+        $this->authorizeAdmin();
 
         return view('pelatihan.create');
     }
 
+
     public function store(Request $request)
     {
-        if (!auth()->user()->isAdmin()) {
-            abort(403);
-        }
+        $this->authorizeAdmin();
+
         $request->validate([
             'nama_pelatihan' => 'required',
             'jenis_pelatihan' => 'required',
@@ -40,21 +39,19 @@ class PelatihanController extends Controller
             ->with('success', 'Data pelatihan berhasil ditambahkan');
     }
 
+
     public function edit($id)
     {
-        if (!auth()->user()->isAdmin()) {
-            abort(403);
-        }
+        $this->authorizeAdmin();
 
         $pelatihan = Pelatihan::findOrFail($id);
         return view('pelatihan.edit', compact('pelatihan'));
     }
 
+
     public function update(Request $request, $id)
     {
-        if (!auth()->user()->isAdmin()) {
-            abort(403);
-        }
+        $this->authorizeAdmin();
 
         $pelatihan = Pelatihan::findOrFail($id);
 
@@ -71,15 +68,23 @@ class PelatihanController extends Controller
             ->with('success', 'Data pelatihan berhasil diperbarui');
     }
 
+
     public function destroy($id)
     {
-        if (!auth()->user()->isAdmin()) {
-            abort(403);
-        }
+        $this->authorizeAdmin();
 
         Pelatihan::findOrFail($id)->delete();
 
         return redirect()->route('pelatihan.index')
             ->with('success', 'Data pelatihan berhasil dihapus');
     }
+
+
+    private function authorizeAdmin()
+    {
+        if (!Auth::user()->isAdmin()) {
+            abort(403, 'Anda tidak memiliki akses.');
+        }
+    }
+
 }

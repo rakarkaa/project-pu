@@ -32,15 +32,15 @@
                 <div class="collapse" id="collapseMaster" data-bs-parent="#sidenavAccordion">
                     <nav class="sb-sidenav-menu-nested nav">
 
+                        @if(auth()->check() && auth()->user()->isAdmin())
+                        <a class="nav-link" href="{{ route('users.index') }}">
+                            Master Users
+                        </a>
+                        @endif
+
                         <a class="nav-link" href="{{ route('pelatihan.index') }}">
                             Master Pelatihan
                         </a>
-
-                        @if(auth()->check() && auth()->user()->isAdmin())
-                            <a class="nav-link" href="{{ route('users.index') }}">
-                                Master Users
-                            </a>
-                        @endif
 
                     </nav>
                 </div>
@@ -64,10 +64,11 @@
                 <div class="collapse" id="collapseKelas"
                      data-bs-parent="#sidenavAccordion">
                     <nav class="sb-sidenav-menu-nested nav">
-                        <a class="nav-link" href="#">
-                            Kelas Kepemimpinan
+                        <a class="nav-link"
+                            href="{{ route('kelas.kepemimpinan.index') }}">
+                                Kelas Kepemimpinan
                         </a>
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="{{ route('kelas.fungsional.index') }}">
                             Kelas Fungsional
                         </a>
                     </nav>

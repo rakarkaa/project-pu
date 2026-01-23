@@ -5,6 +5,8 @@ use App\Http\Controllers\PelatihanController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\KelasKepemimpinanController;
+use App\Http\Controllers\KelasFungsionalController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 
 /*
@@ -32,6 +34,8 @@ Route::middleware('auth')->group(function () {
     | Master Pelatihan (Admin & User boleh lihat)
     |--------------------------------------------------------------------------
     */
+Route::middleware('auth')->group(function () {
+
     Route::prefix('master-pelatihan')->group(function () {
         Route::get('/', [PelatihanController::class, 'index'])->name('pelatihan.index');
         Route::get('/create', [PelatihanController::class, 'create'])->name('pelatihan.create');
@@ -40,6 +44,9 @@ Route::middleware('auth')->group(function () {
         Route::put('/{id}', [PelatihanController::class, 'update'])->name('pelatihan.update');
         Route::delete('/{id}', [PelatihanController::class, 'destroy'])->name('pelatihan.destroy');
     });
+
+});
+
 
     /*
     |--------------------------------------------------------------------------
@@ -51,3 +58,74 @@ Route::middleware('auth')->group(function () {
     });
 
 });
+
+    /*
+    |--------------------------------------------------------------------------
+    | KELAS KEPEMIMPINAN
+    |--------------------------------------------------------------------------
+    */
+Route::middleware('auth')->prefix('kelas-kepemimpinan')->group(function () {
+
+    // 🔹 semua user boleh lihat
+    Route::get('/', [KelasKepemimpinanController::class, 'index'])
+        ->name('kelas.kepemimpinan.index');
+
+    // ADMIN ONLY
+    Route::middleware('admin')->group(function () {
+
+        Route::get('/create', [KelasKepemimpinanController::class, 'create'])
+            ->name('kelas.kepemimpinan.create');
+
+        Route::post('/', [KelasKepemimpinanController::class, 'store'])
+            ->name('kelas.kepemimpinan.store');
+
+        Route::get('/{id}/edit', [KelasKepemimpinanController::class, 'edit'])
+            ->name('kelas.kepemimpinan.edit');
+
+        Route::put('/{id}', [KelasKepemimpinanController::class, 'update'])
+            ->name('kelas.kepemimpinan.update');
+
+        Route::delete('/{id}', [KelasKepemimpinanController::class, 'destroy'])
+            ->name('kelas.kepemimpinan.destroy');
+    });
+
+});
+
+    /*
+    |--------------------------------------------------------------------------
+    | KELAS FUNGSIONAL
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('kelas-fungsional')->group(function () {
+
+        // ===== SEMUA USER =====
+        Route::get('/',
+            [KelasFungsionalController::class, 'index']
+        )->name('kelas.fungsional.index');
+
+        // ===== ADMIN ONLY =====
+        Route::middleware(['auth', 'admin'])->group(function () {
+
+            Route::get('/create',
+                [KelasFungsionalController::class, 'create']
+            )->name('kelas.fungsional.create');
+
+            Route::post('/',
+                [KelasFungsionalController::class, 'store']
+            )->name('kelas.fungsional.store');
+
+            Route::get('/{id}/edit',
+                [KelasFungsionalController::class, 'edit']
+            )->name('kelas.fungsional.edit');
+
+            Route::put('/{id}',
+                [KelasFungsionalController::class, 'update']
+            )->name('kelas.fungsional.update');
+
+            Route::delete('/{id}',
+                [KelasFungsionalController::class, 'destroy']
+            )->name('kelas.fungsional.destroy');
+        });
+    });
+
+

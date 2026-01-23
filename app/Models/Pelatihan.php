@@ -17,4 +17,19 @@ class Pelatihan extends Model
         'tahun',
         'keterangan',
     ];
+
+    /**
+     * Relasi ke Kelas Kepemimpinan
+     */
+    public function kelasKepemimpinan()
+    {
+        return $this->hasMany(KelasKepemimpinan::class, 'pelatihan_id');
+    }
+
+    public function kelasFungsional()
+    {
+        return $this->hasMany(KelasFungsional::class, 'pelatihan_id');
+    }
+
+
 }
