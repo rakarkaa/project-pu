@@ -13,7 +13,7 @@ public function run(): void
 {
     User::create([
         'name' => 'Admin Project PU',
-        'email' => 'admin@projectpu.test',
+        'email' => 'superadmin@projectpu.test',
         'password' => Hash::make('admin123'),
         'role' => 1,
     ]);

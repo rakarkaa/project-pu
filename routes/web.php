@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\KelasKepemimpinanController;
 use App\Http\Controllers\KelasFungsionalController;
+use App\Http\Controllers\DaftarPantauController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 
 /*
@@ -127,5 +128,21 @@ Route::middleware('auth')->prefix('kelas-kepemimpinan')->group(function () {
             )->name('kelas.fungsional.destroy');
         });
     });
+
+
+    /*|--------------------------------------------------------------------------
+    | DAFTAR PANTAU
+    |--------------------------------------------------------------------------*/
+    Route::middleware(['auth'])->prefix('daftar-pantau')->group(function () {
+
+    Route::get('/kepemimpinan',
+        [DaftarPantauController::class, 'kepemimpinan']
+    )->name('daftar-pantau.kepemimpinan');
+
+    Route::get('/fungsional',
+        [DaftarPantauController::class, 'fungsional']
+    )->name('daftar-pantau.fungsional');
+
+});
 
 
