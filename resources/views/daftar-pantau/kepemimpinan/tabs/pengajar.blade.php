@@ -10,16 +10,25 @@
                 </div>
 
                 <div class="col-md-6 mb-3">
-                    <label class="form-label">Tanggal Surat</label>
+                    <label class="form-label">Jenis Pantau</label>
+                    <select class="form-select">
+                        <option>Surat Permohonan Pengajar</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Deadline Pantau</label>
                     <input type="date" class="form-control">
                 </div>
 
                 <div class="col-md-6 mb-3">
-                    <label class="form-label">Jenis Surat</label>
+                    <label class="form-label">Status Pantau</label>
                     <select class="form-select">
-                        <option value="">-- Pilih --</option>
-                        <option>Undangan</option>
-                        <option>Penugasan</option>
+                        <option>Belum Disiapkan</option>
+                        <option>Proses Penyusunan</option>
+                        <option>Proses Tanda Tangan</option>
+                        <option>Terkirim</option>
+                        <option>Terkonfirmasi</option>
                     </select>
                 </div>
 
@@ -33,7 +42,6 @@
                     <input type="file" class="form-control">
                 </div>
             </div>
-
             <div class="text-end">
                 <button class="btn btn-primary">
                     Simpan Pengajar

@@ -92,10 +92,10 @@
                 <div class="collapse" id="collapsePantau"
                      data-bs-parent="#sidenavAccordion">
                     <nav class="sb-sidenav-menu-nested nav">
-                        <a class="nav-link" href="{{ route('daftar-pantau.kepemimpinan') }}">
+                        <a class="nav-link" href="{{ route('daftar-pantau.kepemimpinan.index') }}">
                             Kepemimpinan
                         </a>
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="{{ route('daftar-pantau.fungsional') }}">
                             Fungsional
                         </a>
                     </nav>

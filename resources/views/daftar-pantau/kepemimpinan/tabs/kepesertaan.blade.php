@@ -4,20 +4,32 @@
         <form>
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label class="form-label">Daftar Peserta</label>
+                    <label class="form-label">Total Peserta</label>
                     <input type="text" class="form-control">
                 </div>
 
                 <div class="col-md-6 mb-3">
-                    <label class="form-label">Tanggal Surat</label>
+                    <label class="form-label">Jenis Pantau</label>
+                    <select class="form-select">
+                        <option>Surat Usulan Peserta</option>
+                        <option>Surat Penetapan</option>
+                        <option>Surat Usulan Pengajar</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Deadline Pantau</label>
                     <input type="date" class="form-control">
                 </div>
 
                 <div class="col-md-6 mb-3">
-                    <label class="form-label">Jenis Surat</label>
+                    <label class="form-label">Status Pantau</label>
                     <select class="form-select">
-                        <option>Undangan</option>
-                        <option>Penugasan</option>
+                        <option>Belum Disiapkan</option>
+                        <option>Proses Penyusunan</option>
+                        <option>Proses Tanda Tangan</option>
+                        <option>Terkirim</option>
+                        <option>Terkonfirmasi</option>
                     </select>
                 </div>
 

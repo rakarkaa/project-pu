@@ -8,6 +8,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\KelasKepemimpinanController;
 use App\Http\Controllers\KelasFungsionalController;
 use App\Http\Controllers\DaftarPantauController;
+use App\Http\Controllers\DaftarPantauKepemimpinanController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 
 /*
@@ -144,5 +145,21 @@ Route::middleware('auth')->prefix('kelas-kepemimpinan')->group(function () {
     )->name('daftar-pantau.fungsional');
 
 });
+
+    //Halaman Awal Kepemimpinan
+Route::prefix('daftar-pantau')->middleware('auth')->group(function () {
+
+    Route::get('/kepemimpinan',
+        [DaftarPantauKepemimpinanController::class, 'index']
+    )->name('daftar-pantau.kepemimpinan.index');
+
+    Route::get('/kepemimpinan/{id}',
+        [DaftarPantauKepemimpinanController::class, 'show']
+    )->name('daftar-pantau.kepemimpinan.show');
+
+});
+
+
+
 
 
