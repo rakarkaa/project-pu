@@ -9,6 +9,9 @@ use App\Http\Controllers\KelasKepemimpinanController;
 use App\Http\Controllers\KelasFungsionalController;
 use App\Http\Controllers\DaftarPantauController;
 use App\Http\Controllers\DaftarPantauKepemimpinanController;
+use App\Http\Controllers\DaftarPantauKepesertaanController;
+use App\Http\Controllers\DaftarPantauPengajarController;
+use App\Http\Controllers\DaftarPantauManajemenController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 
 /*
@@ -146,20 +149,64 @@ Route::middleware('auth')->prefix('kelas-kepemimpinan')->group(function () {
 
 });
 
+
     //Halaman Awal Kepemimpinan
-Route::prefix('daftar-pantau')->middleware('auth')->group(function () {
+    Route::middleware(['auth'])->group(function () {
 
-    Route::get('/kepemimpinan',
-        [DaftarPantauKepemimpinanController::class, 'index']
-    )->name('daftar-pantau.kepemimpinan.index');
+        Route::prefix('daftar-pantau/kepemimpinan')->group(function () {
 
-    Route::get('/kepemimpinan/{id}',
-        [DaftarPantauKepemimpinanController::class, 'show']
-    )->name('daftar-pantau.kepemimpinan.show');
+            Route::get('/', 
+                [DaftarPantauKepemimpinanController::class, 'index']
+            )->name('daftar-pantau.kepemimpinan.index');
 
+            Route::get('/{kelas}', 
+                [DaftarPantauKepemimpinanController::class, 'show']
+            )->name('daftar-pantau.kepemimpinan.show');
+
+            //admin` only routes
+            Route::middleware(['auth', 'admin'])->group(function () {
+            Route::post(
+                '/daftar-pantau/kepemimpinan/{kelas}/kepesertaan',
+                [DaftarPantauKepesertaanController::class, 'store']
+            )->name('pantau.kepesertaan.store');
+
+            Route::delete(
+                '/daftar-pantau/kepesertaan/{id}',
+                [DaftarPantauKepesertaanController::class, 'destroy']
+            )->name('pantau.kepesertaan.destroy');
+
+            Route::middleware(['auth', 'admin'])->group(function () {
+
+            Route::post(
+                '/daftar-pantau/kepemimpinan/{kelas}/pengajar',
+                [DaftarPantauPengajarController::class, 'store']
+            )->name('pantau.pengajar.store');
+
+            Route::delete(
+                '/daftar-pantau/pengajar/{id}',
+                [DaftarPantauPengajarController::class, 'destroy']
+            )->name('pantau.pengajar.destroy');
+
+            Route::middleware(['auth', 'admin'])->group(function () {
+
+            Route::post(
+                '/daftar-pantau/kepemimpinan/{kelas}/manajemen',
+                [DaftarPantauManajemenController::class, 'store']
+            )->name('pantau.manajemen.store');
+
+            Route::delete(
+                '/daftar-pantau/manajemen/{id}',
+                [DaftarPantauManajemenController::class, 'destroy']
+            )->name('pantau.manajemen.destroy');
+
+        });
+
+        });
+        
+        });
+
+    });
 });
-
-
 
 
 

@@ -22,51 +22,314 @@
 
 {{-- BUTTON TAMBAH --}}
 <div class="mb-4 text-end">
-    <button class="btn btn-primary">
+    <button id="btnTambahPantau" class="btn btn-primary">
         <i class="fas fa-plus"></i> Tambah Daftar Pantau
     </button>
+        <div id="formDaftarPantau" class="card mb-4 d-none">
+        <div class="card-body">
+
+            {{-- TABS FORM --}}
+            <ul class="nav nav-tabs mb-3" role="tablist">
+                <li class="nav-item">
+                    <button class="nav-link active"
+                            data-bs-toggle="tab"
+                            data-bs-target="#form-kepesertaan">
+                        Kepesertaan
+                    </button>
+                </li>
+
+                <li class="nav-item">
+                    <button class="nav-link"
+                            data-bs-toggle="tab"
+                            data-bs-target="#form-pengajar">
+                        Pengajar
+                    </button>
+                </li>
+
+                <li class="nav-item">
+                    <button class="nav-link"
+                            data-bs-toggle="tab"
+                            data-bs-target="#form-manajemen">
+                        Manajemen
+                    </button>
+                </li>
+            </ul>
+
+            {{-- TAB CONTENT --}}
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="form-kepesertaan">
+                    @include('daftar-pantau.kepemimpinan.tabs.kepesertaan')
+                </div>
+
+                <div class="tab-pane fade" id="form-pengajar">
+                    @include('daftar-pantau.kepemimpinan.tabs.pengajar')
+                </div>
+
+                <div class="tab-pane fade" id="form-manajemen">
+                    @include('daftar-pantau.kepemimpinan.tabs.manajemen')
+                </div>
+            </div>
+
+        </div>
+    </div>
+
 </div>
 
 {{-- DATA KEPESERTAAN --}}
-<div class="card mb-4">
-    <div class="card-header fw-bold">Daftar Pantau Kepesertaan</div>
-    <div class="card-body">
-        <table class="table table-bordered">
+<hr>
+<h5 class="mt-4">Data Kepesertaan</h5>
+
+<div class="table-responsive">
+    <table id="tableKepesertaan"
+           class="table table-bordered table-striped align-middle">
+        <thead>
             <tr>
-                <td class="text-center text-muted">
-                    Belum ada data
+                <th>No</th>
+                <th>Total Peserta</th>
+                <th>Jenis Pantau</th>
+                <th>Deadline</th>
+                <th>Status</th>
+                <th>Tujuan</th>
+                <th>Lampiran</th>
+
+                @if(auth()->user()->isAdmin())
+                    <th width="10%">Aksi</th>
+                @endif
+            </tr>
+        </thead>
+            <tbody>
+            @forelse($kepesertaan as $item)
+            <tr>
+                <td>{{ $loop->iteration }}</td>
+                <td>{{ $item->total_peserta }}</td>
+                <td>{{ $item->jenis_pantau }}</td>
+                <td>{{ $item->deadline_pantau }}</td>
+                <td>
+                    <span class="badge bg-info">
+                        {{ $item->status_pantau }}
+                    </span>
+                </td>
+                <td>{{ $item->tujuan }}</td>
+                <td>
+                    @if($item->lampiran)
+                        <a href="{{ asset('storage/'.$item->lampiran) }}" target="_blank">
+                            Lihat
+                        </a>
+                    @else
+                        -
+                    @endif
+                </td>
+
+                @if(auth()->user()->isAdmin())
+                <td>
+                    <form action="{{ route('pantau.kepesertaan.destroy', $item->id) }}"
+                        method="POST"
+                        onsubmit="return confirm('Hapus data ini?')">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn btn-sm btn-danger">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </form>
+                </td>
+                @endif
+            </tr>
+            @empty
+            <tr>
+                <td colspan="8" class="text-center text-muted">
+                    Belum ada data kepesertaan
                 </td>
             </tr>
-        </table>
-    </div>
+            @endforelse
+            </tbody>
+    </table>
 </div>
 
 {{-- DATA PENGAJAR --}}
-<div class="card mb-4">
-    <div class="card-header fw-bold">Daftar Pantau Pengajar</div>
-    <div class="card-body">
-        <table class="table table-bordered">
+<hr>
+<h5 class="mt-4">Data Kepesertaan</h5>
+
+<div class="table-responsive">
+    <table id="tablePengajar"
+           class="table table-bordered table-striped align-middle">
+        <thead>
             <tr>
-                <td class="text-center text-muted">
-                    Belum ada data
+                <th>No</th>
+                <th>Daftar Pengajar</th>
+                <th>Jenis Pantau</th>
+                <th>Deadline</th>
+                <th>Status</th>
+                <th>Tujuan</th>
+                <th>Lampiran</th>
+
+                @if(auth()->user()->isAdmin())
+                    <th width="10%">Aksi</th>
+                @endif
+            </tr>
+        </thead>
+            <tbody>
+            @forelse($pengajar as $item)
+            <tr>
+                <td>{{ $loop->iteration }}</td>
+                <td>{{ $item->daftar_pengajar }}</td>
+                <td>{{ $item->jenis_pantau }}</td>
+                <td>{{ $item->deadline_pantau }}</td>
+                <td>
+                    <span class="badge bg-info">
+                        {{ $item->status_pantau }}
+                    </span>
+                </td>
+                <td>{{ $item->tujuan }}</td>
+                <td>
+                    @if($item->lampiran)
+                        <a href="{{ asset('storage/'.$item->lampiran) }}" target="_blank">
+                            Lihat
+                        </a>
+                    @else
+                        -
+                    @endif
+                </td>
+
+                @if(auth()->user()->isAdmin())
+                <td>
+                    <form action="{{ route('pantau.pengajar.destroy', $item->id) }}"
+                        method="POST"
+                        onsubmit="return confirm('Hapus data ini?')">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn btn-sm btn-danger">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </form>
+                </td>
+                @endif
+            </tr>
+            @empty
+            <tr>
+                <td colspan="8" class="text-center text-muted">
+                    Belum ada data Pengajar
                 </td>
             </tr>
-        </table>
-    </div>
+            @endforelse
+            </tbody>
+    </table>
 </div>
 
 {{-- DATA MANAJEMEN --}}
-<div class="card mb-4">
-    <div class="card-header fw-bold">Daftar Pantau Manajemen</div>
-    <div class="card-body">
-        <table class="table table-bordered">
+<hr>
+<h5 class="mt-4">Data Kepesertaan</h5>
+
+<div class="table-responsive">
+    <table id="tableManajemen"
+           class="table table-bordered table-striped align-middle">
+        <thead>
             <tr>
-                <td class="text-center text-muted">
-                    Belum ada data
+                <th>No</th>
+                <th>Perihal Manajemen</th>
+                <th>Jenis Pantau</th>
+                <th>Deadline</th>
+                <th>Status</th>
+                <th>Tujuan</th>
+                <th>Lampiran</th>
+
+                @if(auth()->user()->isAdmin())
+                    <th width="10%">Aksi</th>
+                @endif
+            </tr>
+        </thead>
+            <tbody>
+            @forelse($manajemen as $item)
+            <tr>
+                <td>{{ $loop->iteration }}</td>
+                <td>{{ $item->perihal_manajemen }}</td>
+                <td>{{ $item->jenis_pantau }}</td>
+                <td>{{ $item->deadline_pantau }}</td>
+                <td>
+                    <span class="badge bg-info">
+                        {{ $item->status_pantau }}
+                    </span>
+                </td>
+                <td>{{ $item->tujuan }}</td>
+                <td>
+                    @if($item->lampiran)
+                        <a href="{{ asset('storage/'.$item->lampiran) }}" target="_blank">
+                            Lihat
+                        </a>
+                    @else
+                        -
+                    @endif
+                </td>
+
+                @if(auth()->user()->isAdmin())
+                <td>
+                    <form action="{{ route('pantau.manajemen.destroy', $item->id) }}"
+                        method="POST"
+                        onsubmit="return confirm('Hapus data ini?')">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn btn-sm btn-danger">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </form>
+                </td>
+                @endif
+            </tr>
+            @empty
+            <tr>
+                <td colspan="8" class="text-center text-muted">
+                    Belum ada data Manajemen
                 </td>
             </tr>
-        </table>
-    </div>
+            @endforelse
+            </tbody>
+    </table>
 </div>
+
+@push('scripts')
+<script>
+$(document).ready(function () {
+    $('#tableKepesertaan').DataTable({
+        language: {
+            url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json"
+        }
+    });
+});
+</script>
+@endpush
+
+@push('scripts')
+<script>
+$(document).ready(function () {
+    $('#tablePengajar').DataTable({
+        language: {
+            url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json"
+        }
+    });
+});
+</script>
+@endpush
+
+@push('scripts')
+<script>
+$(document).ready(function () {
+    $('#tableManajemen').DataTable({
+        language: {
+            url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json"
+        }
+    });
+});
+</script>
+@endpush
+
+@push('scripts')
+<script>
+    document.getElementById('btnTambahPantau').addEventListener('click', function () {
+        document.getElementById('formDaftarPantau').classList.toggle('d-none');
+    });
+</script>
+@endpush
+
+
+
 
 @endsection

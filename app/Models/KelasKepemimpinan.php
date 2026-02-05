@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\DaftarPantauKepesertaan;
 
 class KelasKepemimpinan extends Model
 {
@@ -25,4 +26,21 @@ class KelasKepemimpinan extends Model
     {
         return $this->belongsTo(Pelatihan::class, 'pelatihan_id');
     }
+
+    public function daftarPantauKepesertaan()
+    {
+        return $this->hasMany(
+            DaftarPantauKepesertaan::class,
+            'kelas_kepemimpinan_id'
+        );
+    }
+
+        public function daftarPantauPengajar()
+    {
+        return $this->hasMany(
+            DaftarPantauPengajar::class,
+            'kelas_kepemimpinan_id'
+        );
+    }
+
 }

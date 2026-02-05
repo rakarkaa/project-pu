@@ -1,0 +1,31 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class DaftarPantauPengajar extends Model
+{
+    use HasFactory;
+
+    protected $table = 'daftar_pantau_pengajar';
+
+    protected $fillable = [
+        'kelas_kepemimpinan_id',
+        'daftar_pengajar',
+        'jenis_pantau',
+        'deadline_hari',
+        'deadline_pantau',
+        'status_pantau',
+        'tujuan',
+        'lampiran',
+    ];
+
+    public function kelas()
+    {
+        return $this->belongsTo(KelasKepemimpinan::class, 'kelas_kepemimpinan_id');
+    }
+
+}
+
