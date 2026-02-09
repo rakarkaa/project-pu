@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<h1 class="mt-4">Daftar Pantau Kepemimpinan</h1>
+<h1 class="mt-4">Daftar Pantau Fungsional</h1>
 
 {{-- CARD INFO KELAS --}}
 <div class="row justify-content-center mb-4">
@@ -58,15 +58,15 @@
             {{-- TAB CONTENT --}}
             <div class="tab-content">
                 <div class="tab-pane fade show active" id="form-kepesertaan">
-                    @include('daftar-pantau.kepemimpinan.tabs.kepesertaan')
+                    @include('daftar-pantau.fungsional.tabs.kepesertaan')
                 </div>
 
                 <div class="tab-pane fade" id="form-pengajar">
-                    @include('daftar-pantau.kepemimpinan.tabs.pengajar')
+                    @include('daftar-pantau.fungsional.tabs.pengajar')
                 </div>
 
                 <div class="tab-pane fade" id="form-manajemen">
-                    @include('daftar-pantau.kepemimpinan.tabs.manajemen')
+                    @include('daftar-pantau.fungsional.tabs.manajemen')
                 </div>
             </div>
 

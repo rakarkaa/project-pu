@@ -12,6 +12,10 @@ use App\Http\Controllers\DaftarPantauKepemimpinanController;
 use App\Http\Controllers\DaftarPantauKepesertaanController;
 use App\Http\Controllers\DaftarPantauPengajarController;
 use App\Http\Controllers\DaftarPantauManajemenController;
+use App\Http\Controllers\DaftarPantauFungsionalController;
+use App\Http\Controllers\DaftarPantauKepesertaanFungController;
+use App\Http\Controllers\DaftarPantauPengajarFungController;
+use App\Http\Controllers\DaftarPantauManajemenFungController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 
 /*
@@ -163,7 +167,7 @@ Route::middleware('auth')->prefix('kelas-kepemimpinan')->group(function () {
                 [DaftarPantauKepemimpinanController::class, 'show']
             )->name('daftar-pantau.kepemimpinan.show');
 
-            //admin` only routes
+        //admin` only routes
             Route::middleware(['auth', 'admin'])->group(function () {
             Route::post(
                 '/daftar-pantau/kepemimpinan/{kelas}/kepesertaan',
@@ -206,6 +210,69 @@ Route::middleware('auth')->prefix('kelas-kepemimpinan')->group(function () {
         });
 
     });
+
+    // =============================
+// HALAMAN AWAL FUNGSIONAL
+// =============================
+Route::middleware(['auth'])->group(function () {
+
+    Route::prefix('daftar-pantau/fungsional')->group(function () {
+
+        Route::get('/',
+            [DaftarPantauFungsionalController::class, 'index']
+        )->name('daftar-pantau.fungsional.index');
+
+        Route::get('/{kelas}',
+            [DaftarPantauFungsionalController::class, 'show']
+        )->name('daftar-pantau.fungsional.show');
+
+
+        // =============================
+        // ADMIN ONLY CRUD
+        // =============================
+        Route::middleware(['admin'])->group(function () {
+
+            // --- Kepesertaan ---
+            Route::post(
+                '/daftar-pantau/fungsional/{kelas}/kepesertaan',
+                [DaftarPantauKepesertaanFungController::class, 'store']
+            )->name('pantau.kepesertaan.store');
+
+            Route::delete(
+                '/daftar-pantau/kepesertaan/{id}',
+                [DaftarPantauKepesertaanFungController::class, 'destroy']
+            )->name('pantau.kepesertaan.destroy');
+
+
+            // --- Pengajar ---
+            Route::post(
+                '/daftar-pantau/fungsional/{kelas}/pengajar',
+                [DaftarPantauPengajarFungController::class, 'store']
+            )->name('pantau.pengajar.store');
+
+            Route::delete(
+                '/daftar-pantau/pengajar/{id}',
+                [DaftarPantauPengajarFungController::class, 'destroy']
+            )->name('pantau.pengajar.destroy');
+
+
+            // --- Manajemen ---
+            Route::post(
+                '/daftar-pantau/fungsional/{kelas}/manajemen',
+                [DaftarPantauManajemenFungController::class, 'store']
+            )->name('pantau.manajemen.store');
+
+            Route::delete(
+                '/daftar-pantau/manajemen/{id}',
+                [DaftarPantauManajemenFungController::class, 'destroy']
+            )->name('pantau.manajemen.destroy');
+
+        });
+
+    });
+
+});
+
 });
 
 

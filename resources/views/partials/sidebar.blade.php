@@ -95,7 +95,7 @@
                         <a class="nav-link" href="{{ route('daftar-pantau.kepemimpinan.index') }}">
                             Kepemimpinan
                         </a>
-                        <a class="nav-link" href="{{ route('daftar-pantau.fungsional') }}">
+                        <a class="nav-link" href="{{ route('daftar-pantau.fungsional.index') }}">
                             Fungsional
                         </a>
                     </nav>

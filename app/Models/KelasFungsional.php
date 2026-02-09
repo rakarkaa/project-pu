@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\DaftarPantauKepesertaan;
 
 class KelasFungsional extends Model
 {
@@ -25,4 +26,13 @@ class KelasFungsional extends Model
     {
         return $this->belongsTo(Pelatihan::class, 'pelatihan_id');
     }
+
+        public function daftarPantauKepesertaan()
+    {
+        return $this->hasMany(
+            DaftarPantauKepesertaan::class,
+            'kelas_fungsional_id'
+        );
+    }
+
 }
