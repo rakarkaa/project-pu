@@ -208,72 +208,66 @@ Route::middleware('auth')->prefix('kelas-kepemimpinan')->group(function () {
         });
         
         });
-
     });
 
-    // =============================
-// HALAMAN AWAL FUNGSIONAL
-// =============================
-Route::middleware(['auth'])->group(function () {
-
-    Route::prefix('daftar-pantau/fungsional')->group(function () {
-
-        Route::get('/',
-            [DaftarPantauFungsionalController::class, 'index']
-        )->name('daftar-pantau.fungsional.index');
-
-        Route::get('/{kelas}',
-            [DaftarPantauFungsionalController::class, 'show']
-        )->name('daftar-pantau.fungsional.show');
-
-
         // =============================
-        // ADMIN ONLY CRUD
+        // DAFTAR PANTAU FUNGSIONAL
         // =============================
-        Route::middleware(['admin'])->group(function () {
+        Route::middleware(['auth'])
+            ->prefix('daftar-pantau/fungsional')
+            ->group(function () {
 
-            // --- Kepesertaan ---
-            Route::post(
-                '/daftar-pantau/fungsional/{kelas}/kepesertaan',
-                [DaftarPantauKepesertaanFungController::class, 'store']
-            )->name('pantau.kepesertaan.store');
+            Route::get('/',
+                [DaftarPantauFungsionalController::class, 'index']
+            )->name('daftar-pantau.fungsional.index');
 
-            Route::delete(
-                '/daftar-pantau/kepesertaan/{id}',
-                [DaftarPantauKepesertaanFungController::class, 'destroy']
-            )->name('pantau.kepesertaan.destroy');
-
-
-            // --- Pengajar ---
-            Route::post(
-                '/daftar-pantau/fungsional/{kelas}/pengajar',
-                [DaftarPantauPengajarFungController::class, 'store']
-            )->name('pantau.pengajar.store');
-
-            Route::delete(
-                '/daftar-pantau/pengajar/{id}',
-                [DaftarPantauPengajarFungController::class, 'destroy']
-            )->name('pantau.pengajar.destroy');
+            Route::get('/{kelas}',
+                [DaftarPantauFungsionalController::class, 'show']
+            )->name('daftar-pantau.fungsional.show');
 
 
-            // --- Manajemen ---
-            Route::post(
-                '/daftar-pantau/fungsional/{kelas}/manajemen',
-                [DaftarPantauManajemenFungController::class, 'store']
-            )->name('pantau.manajemen.store');
+            // =============================
+            // ADMIN CRUD
+            // =============================
+            Route::middleware(['admin'])->group(function () {
 
-            Route::delete(
-                '/daftar-pantau/manajemen/{id}',
-                [DaftarPantauManajemenFungController::class, 'destroy']
-            )->name('pantau.manajemen.destroy');
+                // Kepesertaan
+                Route::post(
+                    '/{kelas}/kepesertaan',
+                    [DaftarPantauKepesertaanFungController::class, 'store']
+                )->name('pantau.fungsional.kepesertaan.store');
+
+                Route::delete(
+                    '/kepesertaan/{id}',
+                    [DaftarPantauKepesertaanFungController::class, 'destroy']
+                )->name('pantau.fungsional.kepesertaan.destroy');
+
+
+                // Pengajar
+                Route::post(
+                    '/{kelas}/pengajar',
+                    [DaftarPantauPengajarFungController::class, 'store']
+                )->name('pantau.fungsional.pengajar.store');
+
+                Route::delete(
+                    '/pengajar/{id}',
+                    [DaftarPantauPengajarFungController::class, 'destroy']
+                )->name('pantau.fungsional.pengajar.destroy');
+
+
+                // Manajemen
+                Route::post(
+                    '/{kelas}/manajemen',
+                    [DaftarPantauManajemenFungController::class, 'store']
+                )->name('pantau.fungsional.manajemen.store');
+
+                Route::delete(
+                    '/manajemen/{id}',
+                    [DaftarPantauManajemenFungController::class, 'destroy']
+                )->name('pantau.fungsional.manajemen.destroy');
+
+            });
 
         });
 
-    });
-
-});
-
-});
-
-
-
+        });

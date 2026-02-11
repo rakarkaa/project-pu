@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<h1 class="mt-4">Daftar Pantau Kepemimpinan</h1>
+<h1 class="mt-4">Daftar Pantau Fungsional</h1>
 
 <div class="card mb-4">
     <div class="card-body">

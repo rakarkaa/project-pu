@@ -1,6 +1,6 @@
 @if(auth()->user()->isAdmin())
 <form
-    action="{{ route('pantau.pengajar.store', $kelas->id) }}"
+    action="{{ route('pantau.fungsional.pengajar.store', $kelas->id) }}"
     method="POST"
     enctype="multipart/form-data"
     class="mb-4"

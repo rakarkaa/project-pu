@@ -122,7 +122,7 @@
 
                 @if(auth()->user()->isAdmin())
                 <td>
-                    <form action="{{ route('pantau.kepesertaan.destroy', $item->id) }}"
+                    <form action="{{ route('pantau.fungsional.kepesertaan.destroy', $item->id) }}"
                         method="POST"
                         onsubmit="return confirm('Hapus data ini?')">
                         @csrf
@@ -192,7 +192,7 @@
 
                 @if(auth()->user()->isAdmin())
                 <td>
-                    <form action="{{ route('pantau.pengajar.destroy', $item->id) }}"
+                    <form action="{{ route('pantau.fungsional.pengajar.destroy', $item->id) }}"
                         method="POST"
                         onsubmit="return confirm('Hapus data ini?')">
                         @csrf
@@ -262,7 +262,7 @@
 
                 @if(auth()->user()->isAdmin())
                 <td>
-                    <form action="{{ route('pantau.manajemen.destroy', $item->id) }}"
+                    <form action="{{ route('pantau.fungsional.manajemen.destroy', $item->id) }}"
                         method="POST"
                         onsubmit="return confirm('Hapus data ini?')">
                         @csrf

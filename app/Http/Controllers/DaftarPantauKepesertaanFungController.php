@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Kelasfungsional;
+use App\Models\KelasFungsional;
 use App\Models\DaftarPantauKepesertaanFung;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
