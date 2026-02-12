@@ -18,15 +18,15 @@ public function store(Request $request, $kelasId)
     $request->validate([
         'total_peserta' => 'required|integer',
         'jenis_pantau'  => 'required|string',
-        'deadline_hari' => 'required|integer',
+        'deadline_hari' => 'nullable|integer',
         'tujuan'        => 'required|string',
         'lampiran'      => 'nullable|file|mimes:pdf,doc,docx,jpg,png',
     ]);
 
     $kelas = KelasFungsional::findOrFail($kelasId);
 
-    $deadlinePantau = Carbon::parse($kelas->tanggal_mulai)
-        ->addDays((int) $request->deadline_hari);
+    // $deadlinePantau = Carbon::parse($kelas->tanggal_mulai)
+    //     ->addDays((int) $request->deadline_hari);
 
     $lampiranPath = null;
     if ($request->hasFile('lampiran')) {
@@ -38,8 +38,8 @@ public function store(Request $request, $kelasId)
         'kelas_fungsional_id' => $kelas->id,
         'total_peserta'         => $request->total_peserta,
         'jenis_pantau'          => $request->jenis_pantau,
-        'deadline_hari'         => $request->deadline_hari,
-        'deadline_pantau'       => $deadlinePantau,
+        'deadline_hari'         => 0,
+        'deadline_pantau'       => now(),
         'status_pantau'         => 'pending',
         'tujuan'                => $request->tujuan,
         'lampiran'              => $lampiranPath,

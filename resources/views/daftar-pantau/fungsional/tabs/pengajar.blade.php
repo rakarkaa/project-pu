@@ -31,7 +31,7 @@
         </div>
 
         {{-- DEADLINE HARI --}}
-        <div class="col-md-4 mb-3">
+        <div class="col-md-4 mb-3 d-none">
             <label class="form-label">
                 Deadline Pantau (Hari dari tanggal mulai)
             </label>
@@ -39,9 +39,17 @@
                    name="deadline_hari"
                    class="form-control"
                    placeholder="contoh: 7"
-                   required>
+                   value="NULL">
         </div>
 
+        {{-- LAMPIRAN --}}
+        <div class="col-md-4 mb-3">
+            <label class="form-label">
+                Lampiran (Opsional)
+            </label>
+            <input type="file"
+                name="lampiran"
+                class="form-control">
         </div>
 
         {{-- TUJUAN --}}
@@ -51,16 +59,6 @@
                 name="tujuan"
                 class="form-control"
                 required>
-        </div>
-
-        {{-- LAMPIRAN --}}
-        <div class="mb-3">
-            <label class="form-label">
-                Lampiran (Opsional)
-            </label>
-            <input type="file"
-                name="lampiran"
-                class="form-control">
         </div>
 
         <div class="text-end">

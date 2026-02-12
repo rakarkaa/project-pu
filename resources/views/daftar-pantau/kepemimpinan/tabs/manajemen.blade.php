@@ -24,9 +24,9 @@
                 </select>
             </div>
 
-            <div class="col-md-4 mb-3">
+            <div class="col-md-4 mb-3 d-none">
                 <label class="form-label">Deadline (Hari)</label>
-                <input type="number" name="deadline_hari" class="form-control" required>
+                <input type="number" name="deadline_hari" class="form-control" value="NULL">
             </div>
         </div>
 

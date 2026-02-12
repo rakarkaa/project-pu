@@ -99,14 +99,30 @@
         </thead>
             <tbody>
             @forelse($kepesertaan as $item)
+            @php
+                $today = \Carbon\Carbon::now();
+                $tanggalMulai = \Carbon\Carbon::parse($kelas->tanggal_mulai);
+                $tanggalSelesai = \Carbon\Carbon::parse($kelas->tanggal_selesai);
+                
+                if ($today->gt($tanggalMulai)) {
+                    $deadline = '-';
+                    $status = 'Melebihi Deadline';
+                    $badgeClass = 'bg-danger';
+                } else {
+                    $diffDays = intval($today->diffInDays($tanggalMulai));
+                    $deadline = 'H-' . $diffDays;
+                    $status = $item->status_pantau;
+                    $badgeClass = 'bg-info';
+                }
+            @endphp
             <tr>
                 <td>{{ $loop->iteration }}</td>
                 <td>{{ $item->total_peserta }}</td>
                 <td>{{ $item->jenis_pantau }}</td>
-                <td>{{ $item->deadline_pantau }}</td>
+                <td>{{ $deadline }}</td>
                 <td>
-                    <span class="badge bg-info">
-                        {{ $item->status_pantau }}
+                    <span class="badge {{ $badgeClass }}">
+                        {{ $status }}
                     </span>
                 </td>
                 <td>{{ $item->tujuan }}</td>
@@ -169,14 +185,30 @@
         </thead>
             <tbody>
             @forelse($pengajar as $item)
+            @php
+                $today = \Carbon\Carbon::now();
+                $tanggalMulai = \Carbon\Carbon::parse($kelas->tanggal_mulai);
+                $tanggalSelesai = \Carbon\Carbon::parse($kelas->tanggal_selesai);
+                
+                if ($today->gt($tanggalMulai)) {
+                    $deadline = '-';
+                    $status = 'Melebihi Deadline';
+                    $badgeClass = 'bg-danger';
+                } else {
+                    $diffDays = intval($today->diffInDays($tanggalMulai));
+                    $deadline = 'H-' . $diffDays;
+                    $status = $item->status_pantau;
+                    $badgeClass = 'bg-info';
+                }
+            @endphp
             <tr>
                 <td>{{ $loop->iteration }}</td>
                 <td>{{ $item->daftar_pengajar }}</td>
                 <td>{{ $item->jenis_pantau }}</td>
-                <td>{{ $item->deadline_pantau }}</td>
+                <td>{{ $deadline }}</td>
                 <td>
-                    <span class="badge bg-info">
-                        {{ $item->status_pantau }}
+                    <span class="badge {{ $badgeClass }}">
+                        {{ $status }}
                     </span>
                 </td>
                 <td>{{ $item->tujuan }}</td>
@@ -239,14 +271,30 @@
         </thead>
             <tbody>
             @forelse($manajemen as $item)
+            @php
+                $today = \Carbon\Carbon::now();
+                $tanggalMulai = \Carbon\Carbon::parse($kelas->tanggal_mulai);
+                $tanggalSelesai = \Carbon\Carbon::parse($kelas->tanggal_selesai);
+                
+                if ($today->gt($tanggalMulai)) {
+                    $deadline = '-';
+                    $status = 'Melebihi Deadline';
+                    $badgeClass = 'bg-danger';
+                } else {
+                    $diffDays = intval($today->diffInDays($tanggalMulai));
+                    $deadline = 'H-' . $diffDays;
+                    $status = $item->status_pantau;
+                    $badgeClass = 'bg-info';
+                }
+            @endphp
             <tr>
                 <td>{{ $loop->iteration }}</td>
                 <td>{{ $item->perihal_manajemen }}</td>
                 <td>{{ $item->jenis_pantau }}</td>
-                <td>{{ $item->deadline_pantau }}</td>
+                <td>{{ $deadline }}</td>
                 <td>
-                    <span class="badge bg-info">
-                        {{ $item->status_pantau }}
+                    <span class="badge {{ $badgeClass }}">
+                        {{ $status }}
                     </span>
                 </td>
                 <td>{{ $item->tujuan }}</td>

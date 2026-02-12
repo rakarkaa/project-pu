@@ -15,15 +15,15 @@ class DaftarPantauManajemenController extends Controller
         $request->validate([
             'jenis_pantau'  => 'required',
             'perihal_manajemen' => 'required|string',
-            'deadline_hari' => 'required|integer',
+            'deadline_hari' => 'nullable|integer',
             'tujuan'        => 'required',
             'lampiran'      => 'nullable|file',
         ]);
 
         $kelas = KelasKepemimpinan::findOrFail($kelasId);
 
-        $deadlinePantau = Carbon::parse($kelas->tanggal_mulai)
-                                ->addDays((int)$request->deadline_hari);
+        // $deadlinePantau = Carbon::parse($kelas->tanggal_mulai)
+        // ->addDays((int)$request->deadline_hari);
 
         $lampiran = null;
         if ($request->hasFile('lampiran')) {
@@ -35,8 +35,8 @@ class DaftarPantauManajemenController extends Controller
             'kelas_kepemimpinan_id' => $kelas->id,
             'perihal_manajemen'     => $request->perihal_manajemen,
             'jenis_pantau'          => $request->jenis_pantau,
-            'deadline_hari'         => $request->deadline_hari,
-            'deadline_pantau'       => $deadlinePantau,
+            'deadline_hari'         => 0,
+            'deadline_pantau'       => now(),
             'status_pantau'         => 'pending',
             'tujuan'                => $request->tujuan,
             'lampiran'              => $lampiran,

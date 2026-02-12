@@ -22,8 +22,8 @@ class DaftarPantauPengajarFungController extends Controller
 
         $kelas = KelasFungsional::findOrFail($kelasId);
 
-        $deadlinePantau = Carbon::parse($kelas->tanggal_mulai)
-            ->addDays((int) $request->deadline_hari);
+        // $deadlinePantau = Carbon::parse($kelas->tanggal_mulai)
+        //     ->addDays((int) $request->deadline_hari);
 
         $lampiranPath = null;
         if ($request->hasFile('lampiran')) {
@@ -35,8 +35,8 @@ class DaftarPantauPengajarFungController extends Controller
             'kelas_fungsional_id' => $kelas->id,
             'daftar_pengajar'       => $request->daftar_pengajar,
             'jenis_pantau'          => $request->jenis_pantau,
-            'deadline_hari'         => $request->deadline_hari,
-            'deadline_pantau'       => $deadlinePantau,
+            'deadline_hari'         => 0,
+            'deadline_pantau'       => now(),
             'status_pantau'         => 'pending',
             'tujuan'                => $request->tujuan,
             'lampiran'              => $lampiranPath,

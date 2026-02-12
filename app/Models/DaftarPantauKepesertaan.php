@@ -18,6 +18,7 @@ class DaftarPantauKepesertaan extends Model
         'deadline_hari',
         'deadline_pantau',
         'status_pantau',
+        'keterangan',
         'tujuan',
         'lampiran',
     ];

@@ -24,20 +24,30 @@
                 </select>
             </div>
 
-            <div class="col-md-4 mb-3">
+            <div class="col-md-4 mb-3 d-none">
                 <label class="form-label">Deadline (Hari)</label>
-                <input type="number" name="deadline_hari" class="form-control" required>
+                <input type="number" name="deadline_hari" class="form-control" value="NULL">
             </div>
         </div>
 
-        <div class="mb-3">
-            <label class="form-label">Tujuan</label>
-            <input type="text" name="tujuan" class="form-control" required>
+        {{-- LAMPIRAN --}}
+        <div class="col-md-4 mb-3">
+            <label class="form-label">
+                Lampiran (Opsional)
+            </label>
+            <input type="file"
+                name="lampiran"
+                class="form-control">
         </div>
 
+
+        {{-- TUJUAN --}}
         <div class="mb-3">
-            <label class="form-label">Lampiran (Opsional)</label>
-            <input type="file" name="lampiran" class="form-control">
+            <label class="form-label">Tujuan</label>
+            <input type="text"
+                name="tujuan"
+                class="form-control"
+                required>
         </div>
 
         <div class="text-end">
