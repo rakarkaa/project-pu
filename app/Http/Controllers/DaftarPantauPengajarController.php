@@ -15,6 +15,7 @@ class DaftarPantauPengajarController extends Controller
         $request->validate([
             'daftar_pengajar' => 'required|string',
             'jenis_pantau'   => 'required|string',
+            'keterangan'   => 'required|string',
             'deadline_hari'  => 'nullable|integer',
             'tujuan'         => 'required|string',
             'lampiran'       => 'nullable|file|mimes:pdf,doc,docx,jpg,png',
@@ -38,6 +39,7 @@ class DaftarPantauPengajarController extends Controller
             'deadline_hari'         => 0,
             'deadline_pantau'       => now(),
             'status_pantau'         => 'pending',
+            'keterangan'            => $request->keterangan,
             'tujuan'                => $request->tujuan,
             'lampiran'              => $lampiranPath,
         ]);
