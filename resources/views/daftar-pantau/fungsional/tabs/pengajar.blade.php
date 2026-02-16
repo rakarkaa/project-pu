@@ -30,6 +30,20 @@
             </select>
         </div>
 
+        {{-- KETERANGAN --}}
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Keterangan</label>
+            <select name="keterangan"
+                    class="form-select"
+                    required>
+                <option value="">-- Pilih --</option>
+                <option value="Proses Penyusunan">Proses Penyusunan</option>
+                <option value="Proses TTD">Proses TTD</option>
+                <option value="Terkirim">Terkirim</option>
+                <option value="Terkonfirmasi">Terkonfirmasi</option>
+            </select>
+        </div>
+
         {{-- DEADLINE HARI --}}
         <div class="col-md-4 mb-3 d-none">
             <label class="form-label">
@@ -38,8 +52,9 @@
             <input type="number"
                    name="deadline_hari"
                    class="form-control"
-                   placeholder="contoh: 7"
-                   value="NULL">
+                   placeholder="contoh: 7">
+        </div>
+
         </div>
 
         {{-- LAMPIRAN --}}
@@ -61,8 +76,9 @@
                 required>
         </div>
 
+
         <div class="text-end">
-            <button class="btn btn-primary">
+            <button class="btn btn-primary" type="submit">
                 <i class="fas fa-save"></i> Simpan Pengajar
             </button>
         </div>

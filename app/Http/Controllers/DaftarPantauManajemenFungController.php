@@ -15,6 +15,7 @@ class DaftarPantauManajemenFungController extends Controller
         $request->validate([
             'jenis_pantau'  => 'required',
             'perihal_manajemen' => 'required|string',
+            'keterangan' => 'required|string',
             'deadline_hari' => 'nullable|integer',
             'tujuan'        => 'required',
             'lampiran'      => 'nullable|file',
@@ -38,6 +39,7 @@ class DaftarPantauManajemenFungController extends Controller
             'deadline_hari'         => 0,
             'deadline_pantau'       => now(),
             'status_pantau'         => 'pending',
+            'keterangan'            => $request->keterangan,
             'tujuan'                => $request->tujuan,
             'lampiran'              => $lampiran,
         ]);

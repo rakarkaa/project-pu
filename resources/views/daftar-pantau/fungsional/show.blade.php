@@ -89,6 +89,7 @@
                 <th>Jenis Pantau</th>
                 <th>Deadline</th>
                 <th>Status</th>
+                <th>Keterangan</th>
                 <th>Tujuan</th>
                 <th>Lampiran</th>
 
@@ -125,6 +126,7 @@
                         {{ $status }}
                     </span>
                 </td>
+                <td>{{ $item->keterangan }}</td>
                 <td>{{ $item->tujuan }}</td>
                 <td>
                     @if($item->lampiran)
@@ -175,6 +177,7 @@
                 <th>Jenis Pantau</th>
                 <th>Deadline</th>
                 <th>Status</th>
+                <th>Keterangan</th>
                 <th>Tujuan</th>
                 <th>Lampiran</th>
 
@@ -211,6 +214,7 @@
                         {{ $status }}
                     </span>
                 </td>
+                <td>{{ $item->keterangan }}</td>
                 <td>{{ $item->tujuan }}</td>
                 <td>
                     @if($item->lampiran)
@@ -261,6 +265,7 @@
                 <th>Jenis Pantau</th>
                 <th>Deadline</th>
                 <th>Status</th>
+                <th>Keterangan</th>
                 <th>Tujuan</th>
                 <th>Lampiran</th>
 
@@ -297,6 +302,7 @@
                         {{ $status }}
                     </span>
                 </td>
+                <td>{{ $item->keterangan }}</td>
                 <td>{{ $item->tujuan }}</td>
                 <td>
                     @if($item->lampiran)

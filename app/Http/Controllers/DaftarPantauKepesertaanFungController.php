@@ -18,6 +18,7 @@ public function store(Request $request, $kelasId)
     $request->validate([
         'total_peserta' => 'required|integer',
         'jenis_pantau'  => 'required|string',
+        'keterangan'    => 'required|string',
         'deadline_hari' => 'nullable|integer',
         'tujuan'        => 'required|string',
         'lampiran'      => 'nullable|file|mimes:pdf,doc,docx,jpg,png',
@@ -41,6 +42,7 @@ public function store(Request $request, $kelasId)
         'deadline_hari'         => 0,
         'deadline_pantau'       => now(),
         'status_pantau'         => 'pending',
+        'keterangan'            => $request->keterangan,
         'tujuan'                => $request->tujuan,
         'lampiran'              => $lampiranPath,
     ]);

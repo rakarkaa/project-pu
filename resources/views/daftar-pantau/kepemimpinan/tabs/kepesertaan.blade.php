@@ -30,7 +30,7 @@
             </select>
         </div>
 
-                {{-- KETERANGAN --}}
+        {{-- KETERANGAN --}}
         <div class="col-md-4 mb-3">
             <label class="form-label">Keterangan</label>
             <select name="keterangan"
