@@ -25,8 +25,8 @@
                     class="form-select"
                     required>
                 <option value="">-- Pilih --</option>
-                <option value="Undangan">Undangan</option>
-                <option value="Penugasan">Penugasan</option>
+                <option value="penetapan peserta">Penetapan Peserta</option>
+                <option value="permohonan fasilitator">Permohonan Fasilitator</option>
             </select>
         </div>
 

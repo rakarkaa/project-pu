@@ -66,4 +66,43 @@ public function store(Request $request, $kelasId)
 
         return back()->with('success', 'Data kepesertaan berhasil dihapus');
     }
+
+public function update(Request $request, $id)
+{
+    $data = DaftarPantauKepesertaan::findOrFail($id);
+
+    $request->validate([
+        'total_peserta' => 'required|integer',
+        'jenis_pantau'  => 'required|string',
+        'keterangan'    => 'required|string',
+        'tujuan'        => 'required|string',
+        'lampiran'      => 'nullable|file|mimes:pdf,doc,docx,jpg,png',
+    ]);
+
+    // siapkan array update dulu
+    $updateData = [
+        'total_peserta' => $request->total_peserta,
+        'jenis_pantau'  => $request->jenis_pantau,
+        'keterangan'    => $request->keterangan,
+        'tujuan'        => $request->tujuan,
+    ];
+
+    if ($request->hasFile('lampiran')) {
+
+        // hapus file lama
+        if ($data->lampiran) {
+            Storage::disk('public')->delete($data->lampiran);
+        }
+
+        // simpan file baru
+        $updateData['lampiran'] = $request->file('lampiran')
+            ->store('lampiran/kepesertaan','public');
+    }
+
+    // update sekali saja
+    $data->update($updateData);
+
+    return back()->with('success','Data berhasil diupdate');
+}
+
 }

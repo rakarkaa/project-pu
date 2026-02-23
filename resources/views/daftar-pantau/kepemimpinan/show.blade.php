@@ -130,7 +130,7 @@
                 <td>{{ $item->tujuan }}</td>
                 <td>
                     @if($item->lampiran)
-                        <a href="{{ asset('storage/'.$item->lampiran) }}" target="_blank">
+                        <a href="{{ Storage::url($item->lampiran) }}" target="_blank">
                             Lihat
                         </a>
                     @else
@@ -140,6 +140,14 @@
 
                 @if(auth()->user()->isAdmin())
                 <td>
+                    {{-- BUTTON EDIT --}}
+                    <button class="btn btn-sm btn-warning"
+                        data-bs-toggle="modal"
+                        data-bs-target="#editModal{{ $item->id }}">
+                        <i class="fas fa-edit"></i>
+                    </button>
+
+                    {{-- MODAL HAPUS --}}
                     <form action="{{ route('pantau.kepesertaan.destroy', $item->id) }}"
                         method="POST"
                         onsubmit="return confirm('Hapus data ini?')">
@@ -152,6 +160,109 @@
                 </td>
                 @endif
             </tr>
+                <div class="modal fade" id="editModal{{ $item->id }}">
+                <div class="modal-dialog">
+                <form method="POST"
+                    action="{{ route('pantau.kepesertaan.update',$item->id) }}"
+                    enctype="multipart/form-data">
+                    @csrf
+                    @method('PUT')
+
+                    <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h5>Edit Kepesertaan</h5>
+                    </div>
+
+                    <div class="modal-body">
+
+                    <div class="mb-3">
+                        <label class="form-label">Total Peserta</label>
+                        <input type="number"
+                            name="total_peserta"
+                            class="form-control"
+                            value="{{ $item->total_peserta }}"
+                            min="0"
+                            required>
+                    </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Jenis Pantau</label>
+
+                            <select name="jenis_pantau" class="form-select" required>
+                                <option value="">-- Pilih --</option>
+
+                                <option value="penetapan peserta"
+                                    {{ $item->jenis_pantau == 'penetapan peserta' ? 'selected' : '' }}>
+                                    Penetapan Peserta
+                                </option>
+
+                                <option value="permohonan fasilitator"
+                                    {{ $item->jenis_pantau == 'permohonan fasilitator' ? 'selected' : '' }}>
+                                    Permohonan Fasilitator
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Keterangan</label>
+
+                            <select name="keterangan" class="form-select" required>
+                                <option value="">-- Pilih --</option>
+                                <option value="Proses Penyusunan"
+                                    {{ $item->keterangan == 'Proses Penyusunan' ? 'selected' : '' }}>
+                                    Proses Penyusunan
+                                </option>
+                                <option value="Proses TTD"
+                                    {{ $item->keterangan == 'Proses TTD' ? 'selected' : '' }}>
+                                    Proses TTD
+                                </option>
+                                <option value="Terkirim"
+                                    {{ $item->keterangan == 'Terkirim' ? 'selected' : '' }}>
+                                    Terkirim
+                                </option>
+                                <option value="Terkonfirmasi"
+                                    {{ $item->keterangan == 'Terkonfirmasi' ? 'selected' : '' }}>
+                                    Terkonfirmasi
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Tujuan</label>
+                            <input type="text"
+                                name="tujuan"
+                                class="form-control"
+                                value="{{ $item->tujuan }}"
+                                required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Lampiran</label>
+                            <input type="file"
+                                name="lampiran"
+                                class="form-control"
+                                accept=".pdf,.doc,.docx,.jpg,.png">
+                        </div>
+
+                        @if($item->lampiran)
+                            <small>
+                                File saat ini:
+                                <a href="{{ asset('storage/'.$item->lampiran) }}" target="_blank">
+                                    Lihat
+                                </a>
+                            </small>
+                        @endif
+                        </div>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-primary">Update</button>
+                    </div>
+
+                    </div>
+                </form>
+                </div>
+                </div>
             @empty
             <tr>
                 <td colspan="8" class="text-center text-muted">
@@ -316,6 +427,7 @@
 
                 @if(auth()->user()->isAdmin())
                 <td>
+                        {{-- MODAL HAPUS --}}
                     <form action="{{ route('pantau.manajemen.destroy', $item->id) }}"
                         method="POST"
                         onsubmit="return confirm('Hapus data ini?')">

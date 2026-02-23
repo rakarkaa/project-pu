@@ -203,6 +203,12 @@ Route::middleware('auth')->prefix('kelas-kepemimpinan')->group(function () {
                 [DaftarPantauManajemenController::class, 'destroy']
             )->name('pantau.manajemen.destroy');
 
+            Route::put(
+                '/daftar-pantau/kepesertaan/{id}',
+                [DaftarPantauKepesertaanController::class, 'update']
+            )->name('pantau.kepesertaan.update');            
+
+
         });
 
         });
