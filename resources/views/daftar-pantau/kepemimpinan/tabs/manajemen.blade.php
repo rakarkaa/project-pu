@@ -8,27 +8,24 @@
 
         <div class="col-md-4 mb-3">
             <label class="form-label">Perihal Manajemen</label>
-            <input type="text"
-                name="perihal_manajemen"
-                class="form-control"
-                required>
+            <input type="text" name="perihal_manajemen" class="form-control" required>
         </div>
 
         <div class="row">
+            {{-- PERBAIKAN: JENIS PANTAU DINAMIS --}}
             <div class="col-md-4 mb-3">
                 <label class="form-label">Jenis Pantau</label>
                 <select name="jenis_pantau" class="form-select" required>
                     <option value="">-- Pilih --</option>
-                    <option value="Undangan">Undangan</option>
-                    <option value="Penugasan">Penugasan</option>
+                    @foreach($jenisPantau as $jp)
+                        <option value="{{ $jp->nama_pantau }}">{{ $jp->nama_pantau }}</option>
+                    @endforeach
                 </select>
             </div>
 
         <div class="col-md-4 mb-3">
             <label class="form-label">Keterangan</label>
-            <select name="keterangan"
-                    class="form-select"
-                    required>
+            <select name="keterangan" class="form-select" required>
                 <option value="">-- Pilih --</option>
                 <option value="Proses Penyusunan">Proses Penyusunan</option>
                 <option value="Proses TTD">Proses TTD</option>
@@ -59,4 +56,4 @@
             </button>
         </div>
         </form>
-        @endif
+@endif

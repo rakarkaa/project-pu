@@ -42,6 +42,14 @@
                             Master Pelatihan
                         </a>
 
+                        <a class="nav-link" href="{{ route('balai.index') }}">
+                            Master Balai
+                        </a>
+
+                        <a class="nav-link" href="{{ route('jenis-pantau.index') }}">
+                            Master Jenis Pantau
+                        </a>
+
                     </nav>
                 </div>
 

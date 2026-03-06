@@ -24,11 +24,18 @@
                     </select>
                 </div>
 
+                {{-- PERBAIKAN: Mengubah input text menjadi dropdown select --}}
                 <div class="mb-3">
                     <label>Balai</label>
-                    <input type="text" name="balai"
-                        class="form-control"
-                        value="{{ $kelas->balai }}" required>
+                    <select name="balai_id" class="form-control" required>
+                        <option value="">-- Pilih Balai --</option>
+                        @foreach($balai as $item)
+                            <option value="{{ $item->id }}"
+                                {{ $kelas->balai == $item->nama_balai ? 'selected' : '' }}>
+                                {{ $item->nama_balai }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
 
                 <div class="mb-3">

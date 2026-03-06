@@ -29,10 +29,16 @@
 
             <div class="mb-3">
                 <label class="form-label">Balai</label>
-                <input type="text"
-                       name="balai"
-                       class="form-control"
-                       required>
+                <select name="balai_id"
+                        class="form-select"
+                        required>
+                    <option value="">-- Pilih Balai --</option>
+                    @foreach($balai as $item)
+                        <option value="{{ $item->id }}">
+                            {{ $item->nama_balai }}
+                        </option>
+                    @endforeach
+                </select>
             </div>
 
             <div class="row">

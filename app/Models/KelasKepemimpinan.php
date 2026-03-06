@@ -35,7 +35,7 @@ class KelasKepemimpinan extends Model
         );
     }
 
-        public function daftarPantauPengajar()
+    public function daftarPantauPengajar()
     {
         return $this->hasMany(
             DaftarPantauPengajar::class,

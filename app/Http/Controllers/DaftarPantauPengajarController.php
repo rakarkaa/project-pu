@@ -47,6 +47,39 @@ class DaftarPantauPengajarController extends Controller
         return back()->with('success', 'Daftar pantau pengajar berhasil ditambahkan');
     }
 
+    public function update(Request $request, $id)
+    {
+        $data = DaftarPantauPengajar::findOrFail($id);
+
+        $request->validate([
+            'daftar_pengajar' => 'required|string',
+            'jenis_pantau'    => 'required|string',
+            'keterangan'      => 'required|string',
+            'tujuan'          => 'required|string',
+            'lampiran'        => 'nullable|file|mimes:pdf,doc,docx,jpg,png',
+        ]);
+
+        $updateData = [
+            'daftar_pengajar' => $request->daftar_pengajar,
+            'jenis_pantau'    => $request->jenis_pantau,
+            'keterangan'      => $request->keterangan,
+            'tujuan'          => $request->tujuan,
+        ];
+
+        if ($request->hasFile('lampiran')) {
+            // Hapus file lama jika ada
+            if ($data->lampiran) {
+                Storage::disk('public')->delete($data->lampiran);
+            }
+            // Simpan file baru
+            $updateData['lampiran'] = $request->file('lampiran')->store('lampiran/pengajar', 'public');
+        }
+
+        $data->update($updateData);
+
+        return back()->with('success', 'Data pengajar berhasil diupdate');
+    }
+
     public function destroy($id)
     {
         $data = DaftarPantauPengajar::findOrFail($id);

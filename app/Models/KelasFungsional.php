@@ -27,10 +27,18 @@ class KelasFungsional extends Model
         return $this->belongsTo(Pelatihan::class, 'pelatihan_id');
     }
 
-        public function daftarPantauKepesertaan()
+    public function daftarPantauKepesertaan()
     {
         return $this->hasMany(
             DaftarPantauKepesertaan::class,
+            'kelas_fungsional_id'
+        );
+    }
+
+    public function daftarPantauPengajar()
+    {
+        return $this->hasMany(
+            DaftarPantauPengajar::class,
             'kelas_fungsional_id'
         );
     }

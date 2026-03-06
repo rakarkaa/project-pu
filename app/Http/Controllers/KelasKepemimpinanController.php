@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\KelasKepemimpinan;
 use App\Models\Pelatihan;
+use App\Models\Balai;
 use Illuminate\Http\Request;
 
 class KelasKepemimpinanController extends Controller
@@ -25,28 +26,40 @@ class KelasKepemimpinanController extends Controller
      */
     public function create()
     {
-        $this->authorizeAdmin();
-
+        // Mengambil data pelatihan
         $pelatihan = Pelatihan::orderBy('nama_pelatihan')->get();
+        
+        // Mengambil data balai (ditambahkan orderBy agar rapi di dropdown view)
+        $balai = Balai::orderBy('nama_balai')->get(); 
 
-        return view('kelas.kepemimpinan.create', compact('pelatihan'));
+        // Menggabungkan keduanya di dalam compact()
+        return view('kelas.kepemimpinan.create', compact('pelatihan', 'balai'));
     }
 
-    /**
+ /**
      * Simpan data kelas (ADMIN)
      */
-    public function store(Request $request)
+public function store(Request $request)
     {
         $this->authorizeAdmin();
 
         $request->validate([
             'pelatihan_id'   => 'required|exists:tb_pelatihan,id',
-            'balai'          => 'required|string|max:255',
+            'balai_id'       => 'required|exists:tb_balai,id',
             'tanggal_mulai'  => 'required|date',
             'tanggal_selesai'=> 'required|date|after_or_equal:tanggal_mulai',
         ]);
 
-        KelasKepemimpinan::create($request->all());
+        // 1. Cari data Balai berdasarkan balai_id yang dipilih dari form
+        $dataBalai = Balai::findOrFail($request->balai_id);
+
+        // 2. Simpan 'nama_balai' ke dalam kolom 'balai'
+        KelasKepemimpinan::create([
+            'pelatihan_id'    => $request->pelatihan_id,
+            'balai'           => $dataBalai->nama_balai, // <-- Ini yang kita ubah
+            'tanggal_mulai'   => $request->tanggal_mulai,
+            'tanggal_selesai' => $request->tanggal_selesai,
+        ]);
 
         return redirect()
             ->route('kelas.kepemimpinan.index')
@@ -61,9 +74,11 @@ class KelasKepemimpinanController extends Controller
         $this->authorizeAdmin();
 
         $kelas = KelasKepemimpinan::findOrFail($id);
+        
         $pelatihan = Pelatihan::orderBy('nama_pelatihan')->get();
+        $balai = Balai::orderBy('nama_balai')->get();
 
-        return view('kelas.kepemimpinan.edit', compact('kelas', 'pelatihan'));
+        return view('kelas.kepemimpinan.edit', compact('kelas', 'pelatihan', 'balai'));
     }
 
     /**
@@ -77,12 +92,21 @@ class KelasKepemimpinanController extends Controller
 
         $request->validate([
             'pelatihan_id'   => 'required|exists:tb_pelatihan,id',
-            'balai'          => 'required|string|max:255',
+            'balai_id'       => 'required|exists:tb_balai,id',
             'tanggal_mulai'  => 'required|date',
             'tanggal_selesai'=> 'required|date|after_or_equal:tanggal_mulai',
         ]);
 
-        $kelas->update($request->all());
+        // 1. Cari data Balai yang baru dipilih
+        $dataBalai = Balai::findOrFail($request->balai_id);
+
+        // 2. Update dengan nama balai, bukan ID-nya
+        $kelas->update([
+            'pelatihan_id'    => $request->pelatihan_id,
+            'balai'           => $dataBalai->nama_balai, // <-- Ini juga kita ubah
+            'tanggal_mulai'   => $request->tanggal_mulai,
+            'tanggal_selesai' => $request->tanggal_selesai,
+        ]);
 
         return redirect()->route('kelas.kepemimpinan.index')
             ->with('success', 'Kelas Kepemimpinan berhasil diperbarui');

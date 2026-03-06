@@ -7,6 +7,7 @@ use App\Models\KelasKepemimpinan;
 use App\Models\DaftarPantauKepesertaan;
 use App\Models\DaftarPantauPengajar;
 use App\Models\DaftarPantauManajemen;
+use App\Models\JenisPantau; // <-- PERBAIKAN: Import Model JenisPantau
 use Carbon\Carbon;
 
 class DaftarPantauKepemimpinanController extends Controller
@@ -28,12 +29,13 @@ class DaftarPantauKepemimpinanController extends Controller
 
         $manajemen = DaftarPantauManajemen::where('kelas_kepemimpinan_id', $id)->get();
 
+        // PERBAIKAN: Ambil master data Jenis Pantau
+        $jenisPantau = JenisPantau::orderBy('nama_pantau', 'asc')->get();
+
         return view(
             'daftar-pantau.kepemimpinan.show',
-            compact('kelas', 'kepesertaan', 'pengajar', 'manajemen')
+            // PERBAIKAN: Tambahkan $jenisPantau ke compact
+            compact('kelas', 'kepesertaan', 'pengajar', 'manajemen', 'jenisPantau')
         );
     }
-
-
-    
 }

@@ -47,6 +47,39 @@ class DaftarPantauManajemenController extends Controller
         return back()->with('success', 'Daftar pantau manajemen berhasil ditambahkan');
     }
 
+    public function update(Request $request, $id)
+    {
+        $data = DaftarPantauManajemen::findOrFail($id);
+
+        $request->validate([
+            'perihal_manajemen' => 'required|string',
+            'jenis_pantau'      => 'required|string',
+            'keterangan'        => 'required|string',
+            'tujuan'            => 'required|string',
+            'lampiran'          => 'nullable|file',
+        ]);
+
+        $updateData = [
+            'perihal_manajemen' => $request->perihal_manajemen,
+            'jenis_pantau'      => $request->jenis_pantau,
+            'keterangan'        => $request->keterangan,
+            'tujuan'            => $request->tujuan,
+        ];
+
+        if ($request->hasFile('lampiran')) {
+            // Hapus file lama jika ada
+            if ($data->lampiran) {
+                Storage::disk('public')->delete($data->lampiran);
+            }
+            // Simpan file baru
+            $updateData['lampiran'] = $request->file('lampiran')->store('lampiran/manajemen', 'public');
+        }
+
+        $data->update($updateData);
+
+        return back()->with('success', 'Data manajemen berhasil diupdate');
+    }
+
     public function destroy($id)
     {
         $data = DaftarPantauManajemen::findOrFail($id);

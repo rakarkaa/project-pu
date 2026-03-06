@@ -10,51 +10,70 @@ use Carbon\Carbon;
 
 class DaftarPantauManajemenFungController extends Controller
 {
-       public function store(Request $request, $kelasId)
+    public function store(Request $request, $kelasId)
     {
         $request->validate([
-            'jenis_pantau'  => 'required',
+            'jenis_pantau'      => 'required',
             'perihal_manajemen' => 'required|string',
-            'keterangan' => 'required|string',
-            'deadline_hari' => 'nullable|integer',
-            'tujuan'        => 'required',
-            'lampiran'      => 'nullable|file',
+            'keterangan'        => 'required|string',
+            'deadline_hari'     => 'nullable|integer',
+            'tujuan'            => 'required',
+            'lampiran'          => 'nullable|file',
         ]);
 
         $kelas = KelasFungsional::findOrFail($kelasId);
-
-        // $deadlinePantau = Carbon::parse($kelas->tanggal_mulai)
-        //     ->addDays((int)$request->deadline_hari);
-
         $lampiran = null;
         if ($request->hasFile('lampiran')) {
-            $lampiran = $request->file('lampiran')
-                ->store('lampiran/manajemen', 'public');
+            $lampiran = $request->file('lampiran')->store('lampiran/manajemen', 'public');
         }
 
         DaftarPantauManajemenFung::create([
             'kelas_fungsional_id' => $kelas->id,
-            'perihal_manajemen'     => $request->perihal_manajemen,
-            'jenis_pantau'          => $request->jenis_pantau,
-            'deadline_hari'         => 0,
-            'deadline_pantau'       => now(),
-            'status_pantau'         => 'pending',
-            'keterangan'            => $request->keterangan,
-            'tujuan'                => $request->tujuan,
-            'lampiran'              => $lampiran,
+            'perihal_manajemen'   => $request->perihal_manajemen,
+            'jenis_pantau'        => $request->jenis_pantau,
+            'deadline_hari'       => 0,
+            'deadline_pantau'     => now(),
+            'status_pantau'       => 'pending',
+            'keterangan'          => $request->keterangan,
+            'tujuan'              => $request->tujuan,
+            'lampiran'            => $lampiran,
         ]);
 
         return back()->with('success', 'Daftar pantau manajemen berhasil ditambahkan');
     }
 
-    public function destroy($id)
+    public function update(Request $request, $id)
     {
         $data = DaftarPantauManajemenFung::findOrFail($id);
 
-        if ($data->lampiran) {
-            Storage::disk('public')->delete($data->lampiran);
+        $request->validate([
+            'jenis_pantau'      => 'required',
+            'perihal_manajemen' => 'required|string',
+            'keterangan'        => 'required|string',
+            'tujuan'            => 'required',
+            'lampiran'          => 'nullable|file',
+        ]);
+
+        $updateData = [
+            'perihal_manajemen' => $request->perihal_manajemen,
+            'jenis_pantau'      => $request->jenis_pantau,
+            'keterangan'        => $request->keterangan,
+            'tujuan'            => $request->tujuan,
+        ];
+
+        if ($request->hasFile('lampiran')) {
+            if ($data->lampiran) { Storage::disk('public')->delete($data->lampiran); }
+            $updateData['lampiran'] = $request->file('lampiran')->store('lampiran/manajemen', 'public');
         }
 
+        $data->update($updateData);
+        return back()->with('success', 'Data manajemen berhasil diupdate');
+    }
+
+    public function destroy($id)
+    {
+        $data = DaftarPantauManajemenFung::findOrFail($id);
+        if ($data->lampiran) { Storage::disk('public')->delete($data->lampiran); }
         $data->delete();
 
         return back()->with('success', 'Data manajemen berhasil dihapus');

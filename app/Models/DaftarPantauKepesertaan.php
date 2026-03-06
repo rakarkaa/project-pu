@@ -12,7 +12,7 @@ class DaftarPantauKepesertaan extends Model
 
     protected $table = 'daftar_pantau_kepesertaan';
 
-    protected $fillable = [
+protected $fillable = [
         'kelas_kepemimpinan_id',
         'total_peserta',
         'jenis_pantau',
@@ -20,6 +20,9 @@ class DaftarPantauKepesertaan extends Model
         'deadline_pantau',
         'status_pantau',
         'keterangan',
+        'keterangan_dua',
+        'pejabat_ttd', 
+        'batas_waktu', // <-- TAMBAHAN BARU
         'tujuan',
         'lampiran',
     ];

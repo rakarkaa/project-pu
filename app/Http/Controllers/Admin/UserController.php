@@ -23,10 +23,10 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users',
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|unique:users,email',
             'password' => 'required|min:6',
-            'role' => 'required|in:admin,user',
+            'role'     => 'required|in:admin,user',
         ]);
 
         User::create([
@@ -47,10 +47,13 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
+        // PERBAIKAN: Tambahkan validasi email dan password opsional
         $request->validate([
-            'name' => 'required',
-            'role' => 'required|in:admin,user',
+            'name'      => 'required|string|max:255',
+            'email'     => 'required|email|unique:users,email,' . $user->id, // Abaikan email milik user ini sendiri
+            'role'      => 'required|in:admin,user',
             'is_active' => 'required|boolean',
+            'password'  => 'nullable|min:6', // Nullable berarti boleh kosong
         ]);
 
         // Admin tidak boleh menonaktifkan dirinya sendiri
@@ -58,17 +61,33 @@ class UserController extends Controller
             return back()->with('error', 'Tidak bisa menonaktifkan akun sendiri');
         }
 
-        $user->update($request->only('name', 'role', 'is_active'));
+        // PERBAIKAN: Persiapkan data update
+        $updateData = [
+            'name'      => $request->name,
+            'email'     => $request->email,
+            'role'      => $request->role,
+            'is_active' => $request->is_active,
+        ];
+
+        // Jika form password diisi, maka update passwordnya
+        if ($request->filled('password')) {
+            $updateData['password'] = Hash::make($request->password);
+        }
+
+        $user->update($updateData);
 
         return redirect()->route('users.index')
             ->with('success', 'User berhasil diperbarui');
     }
 
-
     public function destroy(User $user)
     {
+        // Proteksi ganda agar tidak bisa hapus diri sendiri lewat endpoint
+        if (auth()->id() === $user->id) {
+            return back()->with('error', 'Tidak bisa menghapus akun sendiri');
+        }
+
         $user->delete();
         return back()->with('success', 'User berhasil dihapus');
     }
 }
-
