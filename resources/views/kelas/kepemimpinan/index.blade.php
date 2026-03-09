@@ -1,64 +1,78 @@
 @extends('layouts.app')
 
 @section('content')
-<h1 class="mt-4">Kelas Kepemimpinan</h1>
+{{-- BAGIAN JUDUL HALAMAN --}}
+<div class="mt-4 mb-4">
+    <h1 class="h3 mb-0 text-gray-800 fw-bold">Manajemen Kelas Kepemimpinan</h1>
+    <p class="text-muted mt-1">Kelola data master untuk jadwal dan lokasi kelas Kepemimpinan.</p>
+</div>
 
-<div class="card mb-4">
-    <div class="card-header">
-        <i class="fas fa-chalkboard-teacher me-1"></i>
-        Data Kelas Kepemimpinan
-    </div>
-
-    {{-- tombol tambah (ADMIN ONLY) --}}
-    @if(auth()->user()->isAdmin())
-    <div class="d-flex justify-content-start mt-3 px-3">
-        <a href="{{ route('kelas.kepemimpinan.create') }}"
-           class="btn btn-primary btn-sm">
-            <i class="fas fa-plus"></i> Tambah Kelas
+{{-- BAGIAN CARD TABEL --}}
+<div class="card shadow-sm border-0 mb-4">
+    
+    {{-- CARD HEADER --}}
+    <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+        <h6 class="mb-0 fw-bold text-primary">
+            <i class="fas fa-chalkboard-teacher me-2"></i>Daftar Kelas Aktif
+        </h6>
+        
+        @if(auth()->user()->isAdmin())
+        <a href="{{ route('kelas.kepemimpinan.create') }}" class="btn btn-primary btn-sm rounded-pill shadow-sm px-3">
+            <i class="fas fa-plus me-1"></i> Tambah Kelas
         </a>
+        @endif
     </div>
-    @endif
 
     <div class="card-body">
         <div class="table-responsive">
-            <table id="tableKelas"
-                   class="table table-bordered table-striped align-middle">
-                <thead>
+            <table id="tableKelas" class="table table-bordered table-hover align-middle w-100">
+                <thead class="table-light text-center">
                     <tr>
-                        <th>No</th>
-                        <th>Pelatihan</th>
+                        <th width="5%">No</th>
+                        <th class="text-start">Nama Pelatihan</th>
                         <th>Balai</th>
                         <th>Tanggal Mulai</th>
                         <th>Tanggal Selesai</th>
-
                         @if(auth()->user()->isAdmin())
-                            <th width="15%">Aksi</th>
+                            <th width="12%">Aksi</th>
                         @endif
                     </tr>
                 </thead>
-                    <tbody>
+                <tbody>
                     @foreach ($kelas as $item)
-                    <tr>
+                    <tr class="text-center">
                         <td>{{ $loop->iteration }}</td>
-                        <td>{{ $item->pelatihan->nama_pelatihan }}</td>
-                        <td>{{ $item->balai }}</td>
-                        <td>{{ $item->tanggal_mulai }}</td>
-                        <td>{{ $item->tanggal_selesai }}</td>
+                        
+                        <td class="text-start fw-bold text-dark">{{ $item->pelatihan->nama_pelatihan ?? '-' }}</td>
+                        <td><span class="text-secondary"><i class="fas fa-building me-1"></i> {{ $item->balai }}</span></td>
+                        
+                        <td>
+                            <span class="badge bg-light text-dark border px-2 py-1">
+                                <i class="fas fa-calendar-alt text-muted me-1"></i> 
+                                {{ \Carbon\Carbon::parse($item->tanggal_mulai)->translatedFormat('d M Y') }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-light text-dark border px-2 py-1">
+                                <i class="fas fa-calendar-check text-muted me-1"></i> 
+                                {{ \Carbon\Carbon::parse($item->tanggal_selesai)->translatedFormat('d M Y') }}
+                            </span>
+                        </td>
 
                         @if(auth()->user()->isAdmin())
                         <td>
+                            {{-- TOMBOL EDIT --}}
                             <a href="{{ route('kelas.kepemimpinan.edit', $item->id) }}"
-                            class="btn btn-sm btn-warning">
+                               class="btn btn-sm btn-warning text-white rounded-circle shadow-sm me-1" 
+                               title="Edit Kelas">
                                 <i class="fas fa-edit"></i>
                             </a>
 
-                            <form action="{{ route('kelas.kepemimpinan.destroy', $item->id) }}"
-                                method="POST"
-                                class="d-inline"
-                                onsubmit="return confirm('Yakin hapus data?')">
+                            {{-- TOMBOL DELETE (Menggunakan SweetAlert2) --}}
+                            <form action="{{ route('kelas.kepemimpinan.destroy', $item->id) }}" method="POST" class="d-inline form-delete">
                                 @csrf
                                 @method('DELETE')
-                                <button class="btn btn-sm btn-danger">
+                                <button type="button" class="btn btn-sm btn-danger rounded-circle shadow-sm btn-delete" title="Hapus Kelas">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </form>
@@ -66,7 +80,7 @@
                         @endif
                     </tr>
                     @endforeach
-                    </tbody>
+                </tbody>
             </table>
         </div>
     </div>
@@ -74,12 +88,37 @@
 @endsection
 
 @push('scripts')
+{{-- Memanggil Library SweetAlert2 --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
     $(document).ready(function () {
+        // Inisialisasi DataTables
         $('#tableKelas').DataTable({
-            language: {
-                url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json"
-            }
+            language: { url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json" },
+            ordering: true, 
+        });
+
+        // Logika Pop-Up Cantik untuk Tombol Delete
+        $(document).on('click', '.btn-delete', function (e) {
+            e.preventDefault();
+            let form = $(this).closest('form'); 
+            
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Data kelas ini akan dihapus secara permanen!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#e74a3b', // Warna merah Bootstrap danger
+                cancelButtonColor: '#858796', // Warna abu-abu Bootstrap secondary
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true // Membalik posisi tombol agar "Batal" di kiri
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit(); // Submit form ke controller
+                }
+            });
         });
     });
 </script>

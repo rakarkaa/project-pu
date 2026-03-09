@@ -189,4 +189,12 @@ Route::middleware('auth')->group(function () {
 
     }); // End Admin Routes
 
+        // Dashboard
+        Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/dashboard', [DashboardController::class, 'index']);
+
+        // MENGHUBUNGKAN MENU MONITORING
+        Route::get('/monitoring', [App\Http\Controllers\MonitoringController::class, 'index'])
+            ->name('monitoring.index');
+
 }); // End Auth Routes

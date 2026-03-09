@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\DaftarPantauKepesertaan;
+use App\Models\DaftarPantauKepesertaanFung; // <-- PERBAIKAN 1: Mengarah ke model Fungsional yang benar
 
 class KelasFungsional extends Model
 {
@@ -27,14 +27,22 @@ class KelasFungsional extends Model
         return $this->belongsTo(Pelatihan::class, 'pelatihan_id');
     }
 
-    public function daftarPantauKepesertaan()
+    /**
+     * PERBAIKAN 2: Ubah nama fungsi dan target class-nya menjadi Fungsional
+     */
+    public function daftarPantauKepesertaanFung()
     {
         return $this->hasMany(
-            DaftarPantauKepesertaan::class,
+            DaftarPantauKepesertaanFung::class,
             'kelas_fungsional_id'
         );
     }
 
+    /**
+     * Catatan: Jika Anda juga memiliki model DaftarPantauPengajarFung, 
+     * fungsi di bawah ini sebaiknya diarahkan ke model tersebut juga nantinya.
+     * Sementara kita biarkan seperti aslinya jika belum ada.
+     */
     public function daftarPantauPengajar()
     {
         return $this->hasMany(
@@ -42,5 +50,4 @@ class KelasFungsional extends Model
             'kelas_fungsional_id'
         );
     }
-
 }

@@ -112,7 +112,7 @@
                 {{-- MONITORING --}}
                 <div class="sb-sidenav-menu-heading">Monitoring</div>
 
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="{{ route('monitoring.index') }}">
                     <div class="sb-nav-link-icon">
                         <i class="fas fa-chart-line"></i>
                     </div>
