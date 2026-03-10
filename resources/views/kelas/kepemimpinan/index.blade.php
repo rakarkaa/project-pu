@@ -1,16 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
-{{-- BAGIAN JUDUL HALAMAN --}}
 <div class="mt-4 mb-4">
     <h1 class="h3 mb-0 text-gray-800 fw-bold">Manajemen Kelas Kepemimpinan</h1>
     <p class="text-muted mt-1">Kelola data master untuk jadwal dan lokasi kelas Kepemimpinan.</p>
 </div>
 
-{{-- BAGIAN CARD TABEL --}}
 <div class="card shadow-sm border-0 mb-4">
-    
-    {{-- CARD HEADER --}}
     <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
         <h6 class="mb-0 fw-bold text-primary">
             <i class="fas fa-chalkboard-teacher me-2"></i>Daftar Kelas Aktif
@@ -29,6 +25,8 @@
                 <thead class="table-light text-center">
                     <tr>
                         <th width="5%">No</th>
+                        {{-- KOLOM ANGKATAN BARU --}}
+                        <th width="10%">Angkatan</th>
                         <th class="text-start">Nama Pelatihan</th>
                         <th>Balai</th>
                         <th>Tanggal Mulai</th>
@@ -42,6 +40,9 @@
                     @foreach ($kelas as $item)
                     <tr class="text-center">
                         <td>{{ $loop->iteration }}</td>
+                        
+                        {{-- DATA ANGKATAN BARU --}}
+                        <td class="fw-bold text-primary">{{ $item->angkatan ?? '-' }}</td>
                         
                         <td class="text-start fw-bold text-dark">{{ $item->pelatihan->nama_pelatihan ?? '-' }}</td>
                         <td><span class="text-secondary"><i class="fas fa-building me-1"></i> {{ $item->balai }}</span></td>
@@ -61,14 +62,12 @@
 
                         @if(auth()->user()->isAdmin())
                         <td>
-                            {{-- TOMBOL EDIT --}}
                             <a href="{{ route('kelas.kepemimpinan.edit', $item->id) }}"
                                class="btn btn-sm btn-warning text-white rounded-circle shadow-sm me-1" 
                                title="Edit Kelas">
                                 <i class="fas fa-edit"></i>
                             </a>
 
-                            {{-- TOMBOL DELETE (Menggunakan SweetAlert2) --}}
                             <form action="{{ route('kelas.kepemimpinan.destroy', $item->id) }}" method="POST" class="d-inline form-delete">
                                 @csrf
                                 @method('DELETE')
@@ -88,18 +87,15 @@
 @endsection
 
 @push('scripts')
-{{-- Memanggil Library SweetAlert2 --}}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
     $(document).ready(function () {
-        // Inisialisasi DataTables
         $('#tableKelas').DataTable({
             language: { url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json" },
             ordering: true, 
         });
 
-        // Logika Pop-Up Cantik untuk Tombol Delete
         $(document).on('click', '.btn-delete', function (e) {
             e.preventDefault();
             let form = $(this).closest('form'); 
@@ -109,14 +105,14 @@
                 text: "Data kelas ini akan dihapus secara permanen!",
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#e74a3b', // Warna merah Bootstrap danger
-                cancelButtonColor: '#858796', // Warna abu-abu Bootstrap secondary
+                confirmButtonColor: '#e74a3b', 
+                cancelButtonColor: '#858796', 
                 confirmButtonText: 'Ya, Hapus!',
                 cancelButtonText: 'Batal',
-                reverseButtons: true // Membalik posisi tombol agar "Batal" di kiri
+                reverseButtons: true 
             }).then((result) => {
                 if (result.isConfirmed) {
-                    form.submit(); // Submit form ke controller
+                    form.submit(); 
                 }
             });
         });

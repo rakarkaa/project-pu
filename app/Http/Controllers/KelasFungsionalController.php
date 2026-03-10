@@ -44,18 +44,20 @@ class KelasFungsionalController extends Controller
 
         $request->validate([
             'pelatihan_id'   => 'required|exists:tb_pelatihan,id',
-            'balai_id'       => 'required|exists:tb_balai,id', // PERBAIKAN: Ubah jadi balai_id
+            'angkatan'       => 'required|string|max:50', // <-- PENAMBAHAN VALIDASI ANGKATAN
+            'balai_id'       => 'required|exists:tb_balai,id',
             'tanggal_mulai'  => 'required|date',
             'tanggal_selesai'=> 'required|date|after_or_equal:tanggal_mulai',
         ]);
 
         // 1. Cari data Balai berdasarkan balai_id yang dipilih dari form dropdown
-        $dataBalai = Balai::findOrFail($request->balai_id); // PERBAIKAN: Gunakan balai_id
+        $dataBalai = Balai::findOrFail($request->balai_id); 
 
-        // 2. Simpan 'nama_balai' ke dalam kolom 'balai'
+        // 2. Simpan data termasuk angkatan
         KelasFungsional::create([
             'pelatihan_id'    => $request->pelatihan_id,
-            'balai'           => $dataBalai->nama_balai, // PERBAIKAN: Ambil properti nama_balai
+            'angkatan'        => $request->angkatan, // <-- PENAMBAHAN INPUT ANGKATAN
+            'balai'           => $dataBalai->nama_balai, 
             'tanggal_mulai'   => $request->tanggal_mulai,
             'tanggal_selesai' => $request->tanggal_selesai,
         ]);
@@ -85,6 +87,7 @@ class KelasFungsionalController extends Controller
 
         $request->validate([
             'pelatihan_id'   => 'required|exists:tb_pelatihan,id',
+            'angkatan'       => 'required|string|max:50', // <-- PENAMBAHAN VALIDASI ANGKATAN
             'balai_id'       => 'required|exists:tb_balai,id',
             'tanggal_mulai'  => 'required|date',
             'tanggal_selesai'=> 'required|date|after_or_equal:tanggal_mulai',
@@ -93,9 +96,10 @@ class KelasFungsionalController extends Controller
         // 1. Cari data Balai yang baru dipilih di dropdown edit
         $dataBalai = Balai::findOrFail($request->balai_id);
 
-        // 2. Update dengan nama balai
+        // 2. Update data termasuk angkatan
         $kelas->update([
             'pelatihan_id'    => $request->pelatihan_id,
+            'angkatan'        => $request->angkatan, // <-- PENAMBAHAN INPUT ANGKATAN
             'balai'           => $dataBalai->nama_balai, 
             'tanggal_mulai'   => $request->tanggal_mulai,
             'tanggal_selesai' => $request->tanggal_selesai,

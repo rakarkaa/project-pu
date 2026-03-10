@@ -22,8 +22,13 @@
                 </select>
             </div>
 
-                {{-- Balai --}}
-                
+            {{-- Input Angkatan --}}
+            <div class="mb-3">
+                <label class="form-label">Angkatan</label>
+                <input type="text" name="angkatan" class="form-control" placeholder="Contoh: Angkatan I, Angkatan 2, dll" required>
+            </div>
+
+            {{-- Balai --}}
             <div class="mb-3">
                 <label class="form-label">Balai</label>
                 <select name="balai_id"

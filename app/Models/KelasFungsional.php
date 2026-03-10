@@ -12,8 +12,9 @@ class KelasFungsional extends Model
 
     protected $table = 'kelas_fungsional';
 
-    protected $fillable = [
+protected $fillable = [
         'pelatihan_id',
+        'angkatan', // <-- TAMBAHKAN INI
         'balai',
         'tanggal_mulai',
         'tanggal_selesai',

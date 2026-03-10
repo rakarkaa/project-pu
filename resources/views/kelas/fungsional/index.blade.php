@@ -25,6 +25,8 @@
                 <thead class="table-light text-center">
                     <tr>
                         <th width="5%">No</th>
+                        {{-- KOLOM ANGKATAN BARU --}}
+                        <th width="10%">Angkatan</th>
                         <th class="text-start">Nama Pelatihan</th>
                         <th>Balai</th>
                         <th>Tanggal Mulai</th>
@@ -38,6 +40,10 @@
                     @foreach ($kelas as $item)
                     <tr class="text-center">
                         <td>{{ $loop->iteration }}</td>
+                        
+                        {{-- DATA ANGKATAN BARU --}}
+                        <td class="fw-bold text-success">{{ $item->angkatan ?? '-' }}</td>
+                        
                         <td class="text-start fw-bold text-dark">{{ $item->pelatihan->nama_pelatihan ?? '-' }}</td>
                         <td><span class="text-secondary"><i class="fas fa-building me-1"></i> {{ $item->balai }}</span></td>
                         <td>
@@ -55,18 +61,15 @@
 
                         @if(auth()->user()->isAdmin())
                         <td>
-                            {{-- TOMBOL EDIT --}}
                             <a href="{{ route('kelas.fungsional.edit', $item->id) }}"
                                class="btn btn-sm btn-warning text-white rounded-circle shadow-sm me-1" 
                                title="Edit Kelas">
                                 <i class="fas fa-edit"></i>
                             </a>
 
-                            {{-- TOMBOL DELETE (Sudah dilepas fungsi bawaan browsernya) --}}
                             <form action="{{ route('kelas.fungsional.destroy', $item->id) }}" method="POST" class="d-inline form-delete">
                                 @csrf
                                 @method('DELETE')
-                                {{-- Perhatikan type="button" agar tidak langsung tersubmit --}}
                                 <button type="button" class="btn btn-sm btn-danger rounded-circle shadow-sm btn-delete" title="Hapus Kelas">
                                     <i class="fas fa-trash"></i>
                                 </button>
@@ -83,36 +86,32 @@
 @endsection
 
 @push('scripts')
-{{-- Memanggil Library SweetAlert2 secara online --}}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
     $(document).ready(function () {
-        // Mengaktifkan DataTables
         $('#tableKelasFungsional').DataTable({
             language: { url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json" },
             ordering: true, 
         });
 
-        // Logika Pop-Up Cantik untuk Tombol Delete
         $(document).on('click', '.btn-delete', function (e) {
             e.preventDefault();
-            let form = $(this).closest('form'); // Mengambil form tempat tombol ini berada
+            let form = $(this).closest('form'); 
             
             Swal.fire({
                 title: 'Apakah Anda yakin?',
                 text: "Data kelas ini akan dihapus secara permanen!",
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#e74a3b', // Warna merah Bootstrap danger
-                cancelButtonColor: '#858796', // Warna abu-abu Bootstrap secondary
+                confirmButtonColor: '#e74a3b', 
+                cancelButtonColor: '#858796', 
                 confirmButtonText: 'Ya, Hapus!',
                 cancelButtonText: 'Batal',
-                reverseButtons: true // Membalik posisi tombol agar "Batal" di kiri
+                reverseButtons: true 
             }).then((result) => {
-                // Jika user klik "Ya, Hapus!"
                 if (result.isConfirmed) {
-                    form.submit(); // Baru form benar-benar dikirim ke database
+                    form.submit(); 
                 }
             });
         });
