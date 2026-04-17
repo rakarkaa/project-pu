@@ -9,12 +9,6 @@
 
     <div class="row">
 
-        {{-- TOTAL PESERTA --}}
-        <div class="col-md-4 mb-3">
-            <label class="form-label">Total Peserta</label>
-            <input type="number" name="total_peserta" class="form-control" required>
-        </div>
-
         {{-- PERBAIKAN: JENIS PANTAU DINAMIS --}}
         <div class="col-md-4 mb-3">
             <label class="form-label">Jenis Pantau</label>
@@ -48,12 +42,24 @@
             </select>
         </div>
 
-        {{-- KETERANGAN DUA (KOLOM KETIK LUAS) --}}
-        <div class="col-md-12 mb-3"> <label class="form-label">Keterangan Dua</label>
-            <textarea name="keterangan_dua" class="form-control" rows="3" placeholder="Ketik keterangan tambahan di sini..."></textarea>
+        {{-- TAMBAHAN: PIC (DROPDOWN) --}}
+        <div class="col-md-4 mb-3">
+            <label class="form-label">PIC</label>
+            <select name="pic" class="form-select" required>
+                <option value="">-- Pilih PIC --</option>
+                @foreach($pics as $p)
+                    <option value="{{ $p->nama }}">{{ $p->nama }} ({{ $p->bagian }})</option>
+                @endforeach
+            </select>
         </div>
 
-        {{-- DEADLINE HARI --}}
+        {{-- KETERANGAN DUA (KOLOM KETIK LUAS) --}}
+        <div class="col-md-8 mb-3"> 
+            <label class="form-label">Keterangan</label>
+            <textarea name="keterangan_dua" class="form-control" rows="1" placeholder="Ketik keterangan tambahan di sini..."></textarea>
+        </div>
+
+        {{-- DEADLINE HARI (HIDDEN) --}}
         <div class="col-md-4 mb-3 d-none">
             <label class="form-label">Deadline Pantau (Hari dari tanggal mulai)</label>
             <input type="number" name="deadline_hari" class="form-control" placeholder="contoh: 7" value="NULL">
@@ -73,11 +79,11 @@
 
     </div>
 
-        {{-- TUJUAN --}}
-        <div class="mb-3">
-            <label class="form-label">Tujuan</label>
-            <input type="text" name="tujuan" class="form-control" required>
-        </div>
+    {{-- TUJUAN --}}
+    <div class="mb-3">
+        <label class="form-label">Tujuan</label>
+        <input type="text" name="tujuan" class="form-control" required>
+    </div>
 
     <div class="text-end">
         <button class="btn btn-primary">

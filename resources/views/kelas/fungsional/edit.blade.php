@@ -1,86 +1,78 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="mt-4 mb-4">
-    <h1 class="h3 mb-0 text-gray-800 fw-bold">Edit Kelas Fungsional</h1>
-    <p class="text-muted mt-1">Perbarui data kelas dan jadwal pelaksanaan.</p>
-</div>
-
-{{-- PENANGKAP PESAN ERROR --}}
-@if ($errors->any())
-    <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
-        <strong>Gagal Disimpan!</strong> Silakan periksa isian form Anda:
-        <ul class="mb-0 mt-1">
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-@endif
+<h1 class="mt-4">Edit Kelas Fungsional</h1>
 
 <div class="card shadow-sm border-0 mb-4">
-    <div class="card-header bg-white py-3 border-bottom">
-        <h6 class="mb-0 fw-bold text-success"><i class="fas fa-edit me-2"></i>Form Edit Kelas</h6>
-    </div>
-    
-    <div class="card-body p-4">
+    <div class="card-body">
         <form action="{{ route('kelas.fungsional.update', $kelas->id) }}" method="POST">
             @csrf
             @method('PUT')
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Pelatihan</label>
+                    <select name="pelatihan_id" class="form-select @error('pelatihan_id') is-invalid @enderror" required>
+                        <option value="">-- Pilih Pelatihan --</option>
+                        @foreach($pelatihan as $p)
+                            <option value="{{ $p->id }}" {{ old('pelatihan_id', $kelas->pelatihan_id) == $p->id ? 'selected' : '' }}>
+                                {{ $p->nama_pelatihan }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
 
-            <div class="mb-4">
-                <label class="form-label fw-bold text-dark">Pelatihan</label>
-                <select name="pelatihan_id" class="form-select" required>
-                    <option value="">-- Pilih Pelatihan --</option>
-                    @foreach($pelatihan as $p)
-                        <option value="{{ $p->id }}" {{ $kelas->pelatihan_id == $p->id ? 'selected' : '' }}>
-                            {{ $p->nama_pelatihan }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label fw-bold">Angkatan</label>
+                    <input type="text" name="angkatan" class="form-control" value="{{ old('angkatan', $kelas->angkatan) }}" required>
+                </div>
 
-            {{-- Input Angkatan --}}
-            <div class="mb-4">
-                <label class="form-label fw-bold text-dark">Angkatan</label>
-                <input type="text" name="angkatan" class="form-control" value="{{ $kelas->angkatan }}" placeholder="Contoh: Angkatan I" required>
-            </div>
-
-            {{-- Dropdown Select balai_id yang sudah diperbaiki --}}
-            <div class="mb-4">
-                <label class="form-label fw-bold text-dark">Balai</label>
-                <select name="balai_id" class="form-select" required>
-                    <option value="">-- Pilih Balai --</option>
-                    @foreach($balai as $item)
-                        <option value="{{ $item->id }}" {{ $kelas->balai == $item->nama_balai ? 'selected' : '' }}>
-                            {{ $item->nama_balai }}
-                        </option>
-                    @endforeach
-                </select>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label fw-bold">Total Peserta</label>
+                    <input type="number" name="total_peserta" class="form-control" value="{{ old('total_peserta', $kelas->total_peserta) }}" required>
+                </div>
             </div>
 
             <div class="row">
-                <div class="col-md-6 mb-4">
-                    <label class="form-label fw-bold text-dark">Tanggal Mulai</label>
-                    <input type="date" name="tanggal_mulai" class="form-control" value="{{ $kelas->tanggal_mulai }}" required>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Balai</label>
+                    <select name="balai_id" class="form-select" required>
+                        <option value="">-- Pilih Balai --</option>
+                        @foreach($balai as $item)
+                            <option value="{{ $item->id }}" {{ $kelas->balai == $item->nama_balai ? 'selected' : '' }}>
+                                {{ $item->nama_balai }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
 
-                <div class="col-md-6 mb-4">
-                    <label class="form-label fw-bold text-dark">Tanggal Selesai</label>
-                    <input type="date" name="tanggal_selesai" class="form-control" value="{{ $kelas->tanggal_selesai }}" required>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Pola Penyelenggaraan</label>
+                    <select name="pola_penyelenggaraan" class="form-select @error('pola_penyelenggaraan') is-invalid @enderror" required>
+                        <option value="">-- Pilih Pola --</option>
+                        @foreach($pola as $p)
+                            <option value="{{ $p->penyelenggara }}" {{ old('pola_penyelenggaraan', $kelas->pola_penyelenggaraan) == $p->penyelenggara ? 'selected' : '' }}>
+                                {{ $p->penyelenggara }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
 
-            <hr class="mb-4">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Tanggal Mulai</label>
+                    <input type="date" name="tanggal_mulai" class="form-control" value="{{ old('tanggal_mulai', $kelas->tanggal_mulai) }}" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Tanggal Selesai</label>
+                    <input type="date" name="tanggal_selesai" class="form-control" value="{{ old('tanggal_selesai', $kelas->tanggal_selesai) }}" required>
+                </div>
+            </div>
 
-            <div class="d-flex">
-                <button type="submit" class="btn btn-success rounded-pill px-4 shadow-sm">
-                    <i class="fas fa-save me-1"></i> Update Data
-                </button>
-                <a href="{{ route('kelas.fungsional.index') }}" class="btn btn-secondary rounded-pill px-4 shadow-sm ms-2">
-                    <i class="fas fa-arrow-left me-1"></i> Kembali
-                </a>
+            <div class="mt-3">
+                <button type="submit" class="btn btn-success px-4"><i class="fas fa-save me-1"></i> Update Data</button>
+                <a href="{{ route('kelas.fungsional.index') }}" class="btn btn-secondary px-4">Batal</a>
             </div>
         </form>
     </div>

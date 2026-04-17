@@ -17,6 +17,8 @@ use App\Http\Controllers\DaftarPantauFungsionalController;
 use App\Http\Controllers\DaftarPantauKepesertaanFungController;
 use App\Http\Controllers\DaftarPantauPengajarFungController;
 use App\Http\Controllers\DaftarPantauManajemenFungController;
+use App\Http\Controllers\PolaPenyelenggaraanController;
+use App\Http\Controllers\PicController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\JenisPantauController;
 
@@ -74,6 +76,9 @@ Route::middleware('auth')->group(function () {
         Route::delete('/{id}', [JenisPantauController::class, 'destroy'])->name('jenis-pantau.destroy');
     });
 
+    Route::resource('pola-penyelenggaraan', PolaPenyelenggaraanController::class);
+
+    Route::resource('pic', PicController::class);
 
     // ------------------------------------------------------------------
     // KELAS & DAFTAR PANTAU (Halaman Tampil)

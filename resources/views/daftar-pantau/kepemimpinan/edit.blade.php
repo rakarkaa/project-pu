@@ -28,12 +28,8 @@
             @csrf
             @method('PUT')
             
+            {{-- TAMBAHAN: Wrapper row g-3 agar form sejajar rapi --}}
             <div class="row g-3">
-                <div class="col-md-4">
-                    <label class="form-label fw-semibold">Total Peserta</label>
-                    <input type="number" name="total_peserta" class="form-control" value="{{ $item->total_peserta }}" required>
-                </div>
-
                 <div class="col-md-4">
                     <label class="form-label fw-semibold">Jenis Pantau</label>
                     <select name="jenis_pantau" class="form-select" required>
@@ -62,6 +58,19 @@
                         <option value="">-- Pilih --</option>
                         <option value="Kepala Pusat" {{ $item->pejabat_ttd == 'Kepala Pusat' ? 'selected' : '' }}>Kepala Pusat</option>
                         <option value="Kepala BPSDM" {{ $item->pejabat_ttd == 'Kepala BPSDM' ? 'selected' : '' }}>Kepala BPSDM</option>
+                    </select>
+                </div>
+
+                {{-- MENU DROPDOWN PIC BARU --}}
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">PIC (Penanggung Jawab)</label>
+                    <select name="pic" class="form-select" required>
+                        <option value="">-- Pilih PIC --</option>
+                        @foreach($pics as $p)
+                            <option value="{{ $p->nama }}" {{ $item->pic == $p->nama ? 'selected' : '' }}>
+                                {{ $p->nama }} ({{ $p->bagian }})
+                            </option>
+                        @endforeach
                     </select>
                 </div>
 

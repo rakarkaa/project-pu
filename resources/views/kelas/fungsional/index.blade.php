@@ -27,6 +27,7 @@
                         <th width="5%">No</th>
                         {{-- KOLOM ANGKATAN BARU --}}
                         <th width="10%">Angkatan</th>
+                        <th>Total Peserta</th>
                         <th class="text-start">Nama Pelatihan</th>
                         <th>Balai</th>
                         <th>Tanggal Mulai</th>
@@ -44,6 +45,8 @@
                         {{-- DATA ANGKATAN BARU --}}
                         <td class="fw-bold text-success">{{ $item->angkatan ?? '-' }}</td>
                         
+                        <td class="fw-bold text-dark">{{ $item->total_peserta ?? '-' }}</td>
+                       
                         <td class="text-start fw-bold text-dark">{{ $item->pelatihan->nama_pelatihan ?? '-' }}</td>
                         <td><span class="text-secondary"><i class="fas fa-building me-1"></i> {{ $item->balai }}</span></td>
                         <td>

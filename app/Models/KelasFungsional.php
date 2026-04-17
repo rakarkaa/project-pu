@@ -12,10 +12,12 @@ class KelasFungsional extends Model
 
     protected $table = 'kelas_fungsional';
 
-protected $fillable = [
+    protected $fillable = [
         'pelatihan_id',
-        'angkatan', // <-- TAMBAHKAN INI
+        'angkatan',
         'balai',
+        'pola_penyelenggaraan',
+        'total_peserta', // Tambahkan ini
         'tanggal_mulai',
         'tanggal_selesai',
     ];
@@ -39,16 +41,5 @@ protected $fillable = [
         );
     }
 
-    /**
-     * Catatan: Jika Anda juga memiliki model DaftarPantauPengajarFung, 
-     * fungsi di bawah ini sebaiknya diarahkan ke model tersebut juga nantinya.
-     * Sementara kita biarkan seperti aslinya jika belum ada.
-     */
-    public function daftarPantauPengajar()
-    {
-        return $this->hasMany(
-            DaftarPantauPengajar::class,
-            'kelas_fungsional_id'
-        );
-    }
+
 }

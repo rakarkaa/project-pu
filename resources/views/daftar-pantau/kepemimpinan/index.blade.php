@@ -61,6 +61,7 @@
                         {{-- Kolom Tampil --}}
                         <th class="text-start">Nama Pelatihan</th>
                         <th>Angkatan</th>
+                        <th>Total Peserta</th>
                         <th>Balai</th>
                         <th>Tanggal Mulai</th>
                         <th>Tanggal Selesai</th>
@@ -81,6 +82,7 @@
                                 {{ $item->pelatihan->nama_pelatihan ?? '-' }}
                             </td>
                             <td class="fw-bold text-primary">{{ $item->angkatan ?? '-' }}</td>
+                            <td class="fw-bold text-dark">{{ $item->total_peserta ?? '-' }}</td>
                             <td>
                                 <span class="text-secondary"><i class="fas fa-building me-1"></i> {{ $item->balai }}</span>
                             </td>

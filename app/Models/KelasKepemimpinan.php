@@ -12,10 +12,12 @@ class KelasKepemimpinan extends Model
 
     protected $table = 'kelas_kepemimpinan';
 
-protected $fillable = [
+    protected $fillable = [
         'pelatihan_id',
-        'angkatan', // <-- TAMBAHKAN INI
+        'angkatan',
         'balai',
+        'pola_penyelenggaraan',
+        'total_peserta', // Tambahkan ini
         'tanggal_mulai',
         'tanggal_selesai',
     ];
@@ -32,14 +34,6 @@ protected $fillable = [
     {
         return $this->hasMany(
             DaftarPantauKepesertaan::class,
-            'kelas_kepemimpinan_id'
-        );
-    }
-
-    public function daftarPantauPengajar()
-    {
-        return $this->hasMany(
-            DaftarPantauPengajar::class,
             'kelas_kepemimpinan_id'
         );
     }

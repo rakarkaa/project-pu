@@ -16,7 +16,6 @@ class DaftarPantauKepesertaanController extends Controller
     public function store(Request $request, $kelasId)
     {
         $request->validate([
-            'total_peserta'  => 'required|integer',
             'jenis_pantau'   => 'required|string',
             'keterangan'     => 'required|string',
             'keterangan_dua' => 'nullable|string',
@@ -41,7 +40,6 @@ class DaftarPantauKepesertaanController extends Controller
 
         DaftarPantauKepesertaan::create([
             'kelas_kepemimpinan_id' => $kelas->id,
-            'total_peserta'         => $request->total_peserta,
             'jenis_pantau'          => $request->jenis_pantau,
             'deadline_hari'         => 0,
             'deadline_pantau'       => now(),
@@ -71,7 +69,6 @@ class DaftarPantauKepesertaanController extends Controller
         $data = DaftarPantauKepesertaan::findOrFail($id);
 
         $request->validate([
-            'total_peserta'  => 'required|integer',
             'jenis_pantau'   => 'required|string',
             'keterangan'     => 'required|string',
             'keterangan_dua' => 'nullable|string',
@@ -87,7 +84,6 @@ class DaftarPantauKepesertaanController extends Controller
             : null;
 
         $updateData = [
-            'total_peserta'  => $request->total_peserta,
             'jenis_pantau'   => $request->jenis_pantau,
             'keterangan'     => $request->keterangan,
             'keterangan_dua' => $request->keterangan_dua,

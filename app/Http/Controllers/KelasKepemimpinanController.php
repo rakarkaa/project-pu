@@ -5,13 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\KelasKepemimpinan;
 use App\Models\Pelatihan;
 use App\Models\Balai;
+use App\Models\PolaPenyelenggaraan; // TAMBAHAN BARU
 use Illuminate\Http\Request;
 
 class KelasKepemimpinanController extends Controller
 {
-    /**
-     * Tampilkan daftar kelas kepemimpinan
-     */
     public function index()
     {
         $kelas = KelasKepemimpinan::with('pelatihan')
@@ -21,121 +19,97 @@ class KelasKepemimpinanController extends Controller
         return view('kelas.kepemimpinan.index', compact('kelas'));
     }
 
-    /**
-     * Form tambah kelas (ADMIN)
-     */
     public function create()
     {
-        // Mengambil data pelatihan
         $pelatihan = Pelatihan::orderBy('nama_pelatihan')->get();
-        
-        // Mengambil data balai (ditambahkan orderBy agar rapi di dropdown view)
-        $balai = Balai::orderBy('nama_balai')->get(); 
+        $balai = Balai::orderBy('nama_balai')->get();
+        $pola = PolaPenyelenggaraan::orderBy('penyelenggara')->get(); // TAMBAHAN BARU
 
-        // Menggabungkan keduanya di dalam compact()
-        return view('kelas.kepemimpinan.create', compact('pelatihan', 'balai'));
+        return view('kelas.kepemimpinan.create', compact('pelatihan', 'balai', 'pola'));
     }
 
-    /**
-     * Simpan data kelas (ADMIN)
-     */
     public function store(Request $request)
     {
         $this->authorizeAdmin();
 
         $request->validate([
-            'pelatihan_id'   => 'required|exists:tb_pelatihan,id',
-            'angkatan'       => 'required|string|max:50', // <-- PENAMBAHAN VALIDASI ANGKATAN
-            'balai_id'       => 'required|exists:tb_balai,id',
-            'tanggal_mulai'  => 'required|date',
-            'tanggal_selesai'=> 'required|date|after_or_equal:tanggal_mulai',
+            'pelatihan_id'         => 'required|exists:tb_pelatihan,id',
+            'angkatan'             => 'required|string|max:50',
+            'balai_id'             => 'required|exists:tb_balai,id',
+            'pola_penyelenggaraan' => 'required|string', // TAMBAHAN BARU
+            'total_peserta'        => 'required|integer|min:1',
+            'tanggal_mulai'        => 'required|date',
+            'tanggal_selesai'      => 'required|date|after_or_equal:tanggal_mulai',
         ]);
 
-        // 1. Cari data Balai berdasarkan balai_id yang dipilih dari form
         $dataBalai = Balai::findOrFail($request->balai_id);
 
-        // 2. Simpan data termasuk angkatan
         KelasKepemimpinan::create([
-            'pelatihan_id'    => $request->pelatihan_id,
-            'angkatan'        => $request->angkatan, // <-- PENAMBAHAN INPUT ANGKATAN
-            'balai'           => $dataBalai->nama_balai, 
-            'tanggal_mulai'   => $request->tanggal_mulai,
-            'tanggal_selesai' => $request->tanggal_selesai,
+            'pelatihan_id'         => $request->pelatihan_id,
+            'angkatan'             => $request->angkatan,
+            'balai'                => $dataBalai->nama_balai,
+            'pola_penyelenggaraan' => $request->pola_penyelenggaraan, // SIMPAN KE DB
+            'total_peserta'        => $request->total_peserta,
+            'tanggal_mulai'        => $request->tanggal_mulai,
+            'tanggal_selesai'      => $request->tanggal_selesai,
         ]);
 
-        return redirect()
-            ->route('kelas.kepemimpinan.index')
+        return redirect()->route('kelas.kepemimpinan.index')
             ->with('success', 'Kelas Kepemimpinan berhasil ditambahkan');
     }
 
-    /**
-     * Form edit kelas (ADMIN)
-     */
     public function edit($id)
     {
-        $this->authorizeAdmin();
-
         $kelas = KelasKepemimpinan::findOrFail($id);
-        
         $pelatihan = Pelatihan::orderBy('nama_pelatihan')->get();
         $balai = Balai::orderBy('nama_balai')->get();
+        $pola = PolaPenyelenggaraan::orderBy('penyelenggara')->get(); // TAMBAHAN BARU
 
-        return view('kelas.kepemimpinan.edit', compact('kelas', 'pelatihan', 'balai'));
+        return view('kelas.kepemimpinan.edit', compact('kelas', 'pelatihan', 'balai', 'pola'));
     }
 
-    /**
-     * Update data kelas (ADMIN)
-     */
     public function update(Request $request, $id)
     {
         $this->authorizeAdmin();
-
         $kelas = KelasKepemimpinan::findOrFail($id);
 
         $request->validate([
-            'pelatihan_id'   => 'required|exists:tb_pelatihan,id',
-            'angkatan'       => 'required|string|max:50', // <-- PENAMBAHAN VALIDASI ANGKATAN
-            'balai_id'       => 'required|exists:tb_balai,id',
-            'tanggal_mulai'  => 'required|date',
-            'tanggal_selesai'=> 'required|date|after_or_equal:tanggal_mulai',
+            'pelatihan_id'         => 'required|exists:tb_pelatihan,id',
+            'angkatan'             => 'required|string|max:50',
+            'balai_id'             => 'required|exists:tb_balai,id',
+            'pola_penyelenggaraan' => 'required|string', // TAMBAHAN BARU
+            'total_peserta'        => 'required|integer|min:1',
+            'tanggal_mulai'        => 'required|date',
+            'tanggal_selesai'      => 'required|date|after_or_equal:tanggal_mulai',
         ]);
 
-        // 1. Cari data Balai yang baru dipilih
         $dataBalai = Balai::findOrFail($request->balai_id);
 
-        // 2. Update data termasuk angkatan
         $kelas->update([
-            'pelatihan_id'    => $request->pelatihan_id,
-            'angkatan'        => $request->angkatan, // <-- PENAMBAHAN INPUT ANGKATAN
-            'balai'           => $dataBalai->nama_balai, 
-            'tanggal_mulai'   => $request->tanggal_mulai,
-            'tanggal_selesai' => $request->tanggal_selesai,
+            'pelatihan_id'         => $request->pelatihan_id,
+            'angkatan'             => $request->angkatan,
+            'balai'                => $dataBalai->nama_balai,
+            'pola_penyelenggaraan' => $request->pola_penyelenggaraan, // UPDATE KE DB
+            'total_peserta'        => $request->total_peserta,
+            'tanggal_mulai'        => $request->tanggal_mulai,
+            'tanggal_selesai'      => $request->tanggal_selesai,
         ]);
 
         return redirect()->route('kelas.kepemimpinan.index')
             ->with('success', 'Kelas Kepemimpinan berhasil diperbarui');
     }
 
-    /**
-     * Hapus data kelas (ADMIN)
-     */
     public function destroy($id)
     {
         $this->authorizeAdmin();
-
         KelasKepemimpinan::findOrFail($id)->delete();
-
-        return redirect()->route('kelas.kepemimpinan.index')
-            ->with('success', 'Kelas Kepemimpinan berhasil dihapus');
+        return redirect()->route('kelas.kepemimpinan.index')->with('success', 'Kelas Kepemimpinan dihapus');
     }
 
-    /**
-     * Proteksi admin
-     */
     private function authorizeAdmin()
     {
         if (!auth()->user()->isAdmin()) {
-            abort(403);
+            abort(403, 'Anda tidak memiliki akses.');
         }
     }
 }

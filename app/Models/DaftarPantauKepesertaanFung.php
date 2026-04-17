@@ -11,9 +11,8 @@ class DaftarPantauKepesertaanFung extends Model
 
     protected $table = 'daftar_pantau_kepesertaanfung';
 
-protected $fillable = [
+    protected $fillable = [
         'kelas_fungsional_id',
-        'total_peserta',
         'jenis_pantau',
         'deadline_hari',
         'deadline_pantau',
@@ -21,13 +20,14 @@ protected $fillable = [
         'keterangan',
         'keterangan_dua',
         'pejabat_ttd',
-        'batas_waktu', // <-- TAMBAHAN BARU
+        'pic',              // <-- INI KUNCI UTAMANYA
+        'batas_waktu', 
         'tujuan',
         'lampiran',
     ];
 
     /**
-     * Relasi ke Kelas Kepemimpinan
+     * Relasi ke Kelas Fungsional
      */
     public function kelas()
     {

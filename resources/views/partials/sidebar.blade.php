@@ -50,6 +50,14 @@
                             Master Jenis Pantau
                         </a>
 
+                        <a class="nav-link" href="{{ route('pola-penyelenggaraan.index') }}">
+                            Pola Penyelenggaraan
+                        </a>
+
+                        <a class="nav-link" href="{{ route('pic.index') }}">
+                            Data PIC
+                        </a>
+
                     </nav>
                 </div>
 

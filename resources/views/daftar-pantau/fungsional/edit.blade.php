@@ -29,11 +29,7 @@
             @csrf
             @method('PUT')
             
-            <div class="row g-3">
-                <div class="col-md-4">
-                    <label class="form-label fw-semibold">Total Peserta</label>
-                    <input type="number" name="total_peserta" class="form-control" value="{{ $item->total_peserta }}" required>
-                </div>
+ 
 
                 <div class="col-md-4">
                     <label class="form-label fw-semibold">Jenis Pantau</label>

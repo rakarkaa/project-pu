@@ -9,12 +9,6 @@
 
     <div class="row">
 
-        {{-- TOTAL PESERTA --}}
-        <div class="col-md-4 mb-3">
-            <label class="form-label">Total Peserta</label>
-            <input type="number" name="total_peserta" class="form-control" required>
-        </div>
-
         {{-- JENIS PANTAU DINAMIS --}}
         <div class="col-md-4 mb-3">
             <label class="form-label">Jenis Pantau</label>
@@ -54,10 +48,21 @@
             </select>
         </div>
 
-        {{-- KETERANGAN (Aslinya Keterangan Dua, pakai textarea) --}}
-        <div class="col-md-12 mb-3">
-            <label class="form-label">Keterangan</label>
-            <textarea name="keterangan_dua" class="form-control" rows="3" placeholder="Ketik keterangan tambahan di sini..."></textarea>
+        {{-- TAMBAHAN: DATA PIC --}}
+        <div class="col-md-4 mb-3">
+            <label class="form-label">PIC (Penanggung Jawab)</label>
+            <select name="pic" class="form-select" required>
+                <option value="">-- Pilih PIC --</option>
+                @foreach($pics as $p)
+                    <option value="{{ $p->nama }}">{{ $p->nama }} ({{ $p->bagian }})</option>
+                @endforeach
+            </select>
+        </div>
+
+        {{-- LAMPIRAN --}}
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Lampiran (Opsional)</label>
+            <input type="file" name="lampiran" class="form-control">
         </div>
 
         {{-- DEADLINE HARI (Disembunyikan / d-none) --}}
@@ -66,10 +71,10 @@
             <input type="number" name="deadline_hari" class="form-control" placeholder="contoh: 7" value="NULL">
         </div>
 
-        {{-- LAMPIRAN --}}
-        <div class="col-md-4 mb-3">
-            <label class="form-label">Lampiran (Opsional)</label>
-            <input type="file" name="lampiran" class="form-control">
+        {{-- KETERANGAN (Aslinya Keterangan Dua, pakai textarea) --}}
+        <div class="col-md-12 mb-3">
+            <label class="form-label">Keterangan</label>
+            <textarea name="keterangan_dua" class="form-control" rows="3" placeholder="Ketik keterangan tambahan di sini..."></textarea>
         </div>
 
     </div>

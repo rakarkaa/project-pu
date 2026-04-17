@@ -13,7 +13,6 @@ class DaftarPantauKepesertaanFungController extends Controller
  public function store(Request $request, $kelasId)
     {
         $request->validate([
-            'total_peserta'  => 'required|integer',
             'jenis_pantau'   => 'required|string',
             'keterangan'     => 'required|string',
             'keterangan_dua' => 'nullable|string',
@@ -38,7 +37,6 @@ class DaftarPantauKepesertaanFungController extends Controller
 
         DaftarPantauKepesertaanFung::create([
             'kelas_fungsional_id'   => $kelas->id,
-            'total_peserta'         => $request->total_peserta,
             'jenis_pantau'          => $request->jenis_pantau,
             'deadline_hari'         => 0,
             'deadline_pantau'       => now(),
@@ -69,7 +67,6 @@ public function update(Request $request, $id)
 
         // 2. Validasi input dari form edit
         $request->validate([
-            'total_peserta'  => 'required|integer',
             'jenis_pantau'   => 'required|string',
             'keterangan'     => 'required|string',
             'keterangan_dua' => 'nullable|string',
@@ -86,7 +83,6 @@ public function update(Request $request, $id)
 
         // 4. Siapkan array data yang akan diupdate
         $updateData = [
-            'total_peserta'  => $request->total_peserta,
             'jenis_pantau'   => $request->jenis_pantau,
             'keterangan'     => $request->keterangan,
             'keterangan_dua' => $request->keterangan_dua,
