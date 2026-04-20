@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+{{-- ================================================================ --}}
+{{-- 1. HEADER HALAMAN                                                --}}
+{{-- ================================================================ --}}
 <div class="d-flex justify-content-between align-items-center mt-4 mb-2">
     <div>
         <h1 class="h3 mb-0 text-gray-800 fw-bold">Monitoring Detail Pemantauan</h1>
@@ -9,18 +12,22 @@
 </div>
 
 <div class="card shadow-sm border-0 mb-5">
+    
+    {{-- ================================================================ --}}
+    {{-- 2. BAGIAN FILTER DINAMIS                                         --}}
+    {{-- ================================================================ --}}
     <div class="card-header bg-white py-3 border-bottom d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
         <h6 class="mb-0 fw-bold text-primary"><i class="fas fa-satellite-dish me-2"></i> Status Dokumen Terkini</h6>
         
-        {{-- LOGIKA PHP UNTUK FILTER DINAMIS --}}
+        {{-- LOGIKA PHP UNTUK MENYIAPKAN DATA DROPDOWN FILTER --}}
         @php
             // 1. Ambil data TAHUN dari tanggal_mulai
             $listTahun = $semuaPemantauan->map(function($item) {
                 return \Carbon\Carbon::parse($item->tanggal_mulai)->format('Y');
             })->unique()->sortDesc();
 
-            // 2. Ambil data ANGKATAN
-            $listAngkatan = $semuaPemantauan->pluck('angkatan')->filter()->unique()->sort();
+            // 2. Ambil data Nama Pelatihan (Pengganti Angkatan)
+            $listNamaPelatihan = $semuaPemantauan->pluck('nama_pelatihan')->filter()->unique()->sort();
         @endphp
 
         {{-- AREA TRIPLE FILTER --}}
@@ -40,53 +47,83 @@
                 <option value="Fungsional">Fungsional</option>
             </select>
 
-            {{-- Filter Angkatan --}}
-            <select id="filterAngkatan" class="form-select form-select-sm shadow-sm border-secondary fw-bold text-secondary" style="width: 160px; border-radius: 8px;">
-                <option value="">👥 Semua Angkatan</option>
-                @foreach($listAngkatan as $angkatan)
-                    <option value="{{ $angkatan }}">{{ $angkatan }}</option>
+            {{-- Filter Nama Pelatihan --}}
+            <select id="filterNamaPelatihan" class="form-select form-select-sm shadow-sm border-secondary fw-bold text-secondary" style="width: 220px; border-radius: 8px;">
+                <option value="">🎓 Semua Pelatihan</option>
+                @foreach($listNamaPelatihan as $nama)
+                    <option value="{{ $nama }}">{{ $nama }}</option>
                 @endforeach
             </select>
         </div>
     </div>
     
+    {{-- ================================================================ --}}
+    {{-- 3. TABEL MONITORING UTAMA                                        --}}
+    {{-- ================================================================ --}}
     <div class="card-body">
         <div class="table-responsive">
             <table id="tableMonitoring" class="table table-bordered table-hover align-middle w-100" style="font-size: 0.9rem;">
                 <thead class="table-light text-center align-middle">
                     <tr>
-                        <th width="5%">No</th>
-                        {{-- KOLOM FILTER TERSEMBUNYI --}}
+                        <th width="3%">No</th>
+                        
+                        {{-- KOLOM FILTER TERSEMBUNYI (Index 1, 2, 3) --}}
                         <th>Kolom Tahun</th>
                         <th>Kolom Jenis</th>
-                        <th>Kolom Angkatan</th>
+                        <th>Kolom Nama Pelatihan</th>
 
-                        <th class="text-start" width="22%">Informasi Kelas</th>
+                        <th class="text-start" width="25%">Informasi Kelas</th>
                         <th width="15%">Jadwal Pelaksanaan</th>
                         <th width="15%">Rincian Dokumen</th>
-                        <th width="8%"><i class="fas fa-file-signature text-secondary d-block mb-1"></i> Susun</th>
-                        <th width="8%"><i class="fas fa-pen-nib text-secondary d-block mb-1"></i> TTD</th>
-                        <th width="8%"><i class="fas fa-paper-plane text-secondary d-block mb-1"></i> Kirim</th>
-                        <th width="8%"><i class="fas fa-check-double text-secondary d-block mb-1"></i> Konfirm</th>
+                        
+                        {{-- KOLOM INDIKATOR PROGRES --}}
+                        <th width="8%"><i class="fas fa-file-signature text-secondary d-block mb-1"></i> Susun </th>
+                        <th width="8%"><i class="fas fa-pen-nib text-secondary d-block mb-1"></i> Tanda Tangan </th>
+                        <th width="8%"><i class="fas fa-paper-plane text-secondary d-block mb-1"></i> Terkirim </th>
+                        <th width="8%"><i class="fas fa-check-double text-secondary d-block mb-1"></i> Terkonfirmasi </th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($semuaPemantauan as $i => $item)
+                    
+                    {{-- ------------------------------------------------ --}}
+                    {{-- LOGIKA SMART DETECTOR & KONVERSI LEVEL PROGRES   --}}
+                    {{-- ------------------------------------------------ --}}
+                    @php
+                        // 1. Amankan variabel (mencegah error Undefined property)
+                        $keteranganTeks = $item->keterangan ?? '';
+                        $statusPantauTeks = $item->status_pantau ?? '';
+
+                        // 2. Deteksi apakah ini data format lama atau format baru
+                        $isDataLama = in_array($keteranganTeks, ['Proses Penyusunan', 'Proses TTD', 'Terkirim', 'Terkonfirmasi']);
+                        $teksStatus = $isDataLama ? $keteranganTeks : $statusPantauTeks;
+
+                        // 3. Ubah teks status menjadi angka level agar ikon centang menyala berurutan
+                        $progressLevel = 0;
+                        if ($teksStatus == 'Proses Penyusunan') {
+                            $progressLevel = 1;
+                        } elseif ($teksStatus == 'Proses TTD') {
+                            $progressLevel = 2;
+                        } elseif ($teksStatus == 'Terkirim') {
+                            $progressLevel = 3;
+                        } elseif ($teksStatus == 'Terkonfirmasi') {
+                            $progressLevel = 4;
+                        }
+                    @endphp
+
                     <tr class="text-center transition-hover">
-                        <td>{{ $i+1 }}</td>
+                        {{-- Class nomor-urut dibutuhkan oleh JavaScript RowsGroup --}}
+                        <td class="nomor-urut text-center text-muted fw-bold">{{ $item->nama_pelatihan }}</td>
                         
                         {{-- DATA FILTER TERSEMBUNYI --}}
                         <td>{{ \Carbon\Carbon::parse($item->tanggal_mulai)->format('Y') }}</td>
                         <td>{{ $item->jenis_kelas }}</td>
-                        <td>{{ $item->angkatan ?? '-' }}</td>
+                        <td>{{ $item->nama_pelatihan }}</td>
 
-                        {{-- INFORMASI KELAS (Nama + Angkatan & Badge) --}}
+                        {{-- INFORMASI KELAS (Hanya Nama Pelatihan) --}}
                         <td class="text-start">
                             <span class="fw-bold text-dark d-block mb-2">
                                 {{ $item->nama_pelatihan }} 
-                                @if(!empty($item->angkatan))
-                                    <span class="text-primary">- {{ $item->angkatan }}</span>
-                                @endif
                             </span>
                             
                             @if($item->jenis_kelas == 'Kepemimpinan')
@@ -114,30 +151,40 @@
                             <small class="text-muted">Tujuan: {{ $item->tujuan }}</small>
                         </td>
 
-                        {{-- INDIKATOR PROGRES TRACKER (DENGAN ANIMASI) --}}
+                        {{-- ------------------------------------------------ --}}
+                        {{-- INDIKATOR PROGRES TRACKER (MEMBACA $progressLevel)--}}
+                        {{-- ------------------------------------------------ --}}
+                        
+                        {{-- Tahap 1: Konsep --}}
                         <td>
-                            @if($item->progress_level >= 1) 
+                            @if($progressLevel >= 1) 
                                 <i class="fas fa-check-circle text-success fs-4 icon-pop"></i> 
                             @else 
                                 <i class="fas fa-circle text-light fs-4 border rounded-circle shadow-sm"></i> 
                             @endif
                         </td>
+                        
+                        {{-- Tahap 2: Tanda Tangan --}}
                         <td>
-                            @if($item->progress_level >= 2) 
+                            @if($progressLevel >= 2) 
                                 <i class="fas fa-check-circle text-success fs-4 icon-pop"></i> 
                             @else 
                                 <i class="fas fa-circle text-light fs-4 border rounded-circle shadow-sm"></i> 
                             @endif
                         </td>
+                        
+                        {{-- Tahap 3: Terkirim --}}
                         <td>
-                            @if($item->progress_level >= 3) 
+                            @if($progressLevel >= 3) 
                                 <i class="fas fa-check-circle text-success fs-4 icon-pop"></i> 
                             @else 
                                 <i class="fas fa-circle text-light fs-4 border rounded-circle shadow-sm"></i> 
                             @endif
                         </td>
+                        
+                        {{-- Tahap 4: Terkonfirmasi --}}
                         <td>
-                            @if($item->progress_level >= 4) 
+                            @if($progressLevel >= 4) 
                                 <i class="fas fa-check-circle text-success fs-4 icon-pop"></i> 
                             @else 
                                 <i class="fas fa-circle text-light fs-4 border rounded-circle shadow-sm"></i> 
@@ -151,6 +198,9 @@
     </div>
 </div>
 
+{{-- ================================================================ --}}
+{{-- 4. GAYA (CSS) TAMBAHAN                                           --}}
+{{-- ================================================================ --}}
 @push('styles')
 <style>
     .transition-hover:hover {
@@ -167,33 +217,66 @@
 
 @endsection
 
+{{-- ================================================================ --}}
+{{-- 5. SCRIPT JAVASCRIPT & DATATABLES                                --}}
+{{-- ================================================================ --}}
 @push('scripts')
+{{-- Panggil DataTables RowsGroup untuk menggabungkan baris yang sama --}}
+<script src="https://cdn.jsdelivr.net/gh/ashl1/datatables-rowsgroup@v2.0.0/dataTables.rowsGroup.js"></script>
+
 <script>
     $(document).ready(function() {
         var table = $('#tableMonitoring').DataTable({
             language: { url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json" },
             ordering: true, 
             pageLength: 10,
+            
+            // Mematikan autoWidth agar lebar kolom dapat diatur manual
+            autoWidth: false, 
+
+            // Menggabungkan kolom 'Informasi Kelas' (index 4) lalu kolom 'No' (index 0)
+            rowsGroup: [4, 0], 
+
             columnDefs: [
-                // Menyembunyikan 3 Kolom Filter Pertama (Index 1, 2, 3)
-                { targets: [1, 2, 3], visible: false } 
-            ]
+                // Sembunyikan 3 Kolom Filter Pertama
+                { targets: [1, 2, 3], visible: false },
+                
+                // Atur lebar kolom
+                { targets: 0, orderable: false, width: "3%" }, 
+                { targets: 4, width: "25%" } 
+            ],
+            
+            // Secara default urutkan tabel berdasarkan Informasi Kelas
+            order: [[4, 'asc']],
+
+            // Eksekusi penomoran ulang agar nomor urut rapi (1, 2, 3...)
+            drawCallback: function (settings) {
+                var api = this.api();
+                var counter = api.context[0]._iDisplayStart + 1;
+
+                $('#tableMonitoring tbody tr').each(function() {
+                    var cell = $(this).find('.nomor-urut');
+                    
+                    if (cell.length > 0 && cell.is(':visible')) {
+                        cell.html(counter); 
+                        counter++;
+                    }
+                });
+            }
         });
 
-        // Eksekusi Filter Tahun (Index 1)
+        // --- SCRIPT EKSEKUSI FILTER ---
         $('#filterTahun').on('change', function () {
             var val = $.fn.dataTable.util.escapeRegex($(this).val());
             table.column(1).search(val ? '^' + val + '$' : '', true, false).draw();
         });
 
-        // Eksekusi Filter Jenis Kelas (Index 2)
         $('#filterJenis').on('change', function () {
             var val = $.fn.dataTable.util.escapeRegex($(this).val());
             table.column(2).search(val ? '^' + val + '$' : '', true, false).draw();
         });
 
-        // Eksekusi Filter Angkatan (Index 3)
-        $('#filterAngkatan').on('change', function () {
+        $('#filterNamaPelatihan').on('change', function () {
             var val = $.fn.dataTable.util.escapeRegex($(this).val());
             table.column(3).search(val ? '^' + val + '$' : '', true, false).draw();
         });

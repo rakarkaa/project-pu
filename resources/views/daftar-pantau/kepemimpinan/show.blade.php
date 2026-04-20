@@ -1,9 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
+{{-- ================================================================ --}}
+{{-- 1. HEADER & INFORMASI KELAS (TEMA BIRU/PRIMARY)                  --}}
+{{-- ================================================================ --}}
 <h1 class="mt-4">Detail Pemantauan Kepemimpinan</h1>
 
-{{-- CARD INFO KELAS (Sudah disesuaikan dengan isian form Kelas) --}}
 <div class="row mb-4 mt-3">
     <div class="col-md-12">
         <div class="card shadow-sm border-0 border-start border-primary border-4">
@@ -13,12 +15,8 @@
                     @if($kelas->angkatan) - <span class="text-dark">{{ $kelas->angkatan }}</span> @endif
                 </h5>
                 <p class="mb-1 text-muted"><i class="fas fa-building me-1"></i> Balai: {{ $kelas->balai }}</p>
-                
-                {{-- PENAMBAHAN DATA TOTAL PESERTA --}}
                 <p class="mb-1 text-muted"><i class="fas fa-users me-1"></i> Total Peserta: {{ $kelas->total_peserta }} Orang</p>
-                
                 <p class="mb-1 text-muted"><i class="fas fa-layer-group me-1"></i> Pola Penyelenggaraan: {{ $kelas->pola_penyelenggaraan }}</p>
-
                 <p class="mb-0 text-muted">
                     <i class="fas fa-calendar-alt me-1"></i> 
                     {{ \Carbon\Carbon::parse($kelas->tanggal_mulai)->translatedFormat('d M Y') }} s/d {{ \Carbon\Carbon::parse($kelas->tanggal_selesai)->translatedFormat('d M Y') }}
@@ -28,7 +26,9 @@
     </div>
 </div>
 
-{{-- PESAN ERROR / SUCCESS --}}
+{{-- ================================================================ --}}
+{{-- 2. NOTIFIKASI (ALERT SUCCESS & ERROR)                            --}}
+{{-- ================================================================ --}}
 @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
         <i class="fas fa-check-circle me-1"></i> {{ session('success') }}
@@ -47,99 +47,161 @@
     </div>
 @endif
 
-{{-- TOMBOL TAMBAH & KEMBALI --}}
+{{-- ================================================================ --}}
+{{-- 3. TOMBOL & FORM TAMBAH DATA (HANYA UNTUK ADMIN)                 --}}
+{{-- ================================================================ --}}
 <div class="d-flex justify-content-between mb-3">
     <a href="{{ route('daftar-pantau.kepemimpinan.index') }}" class="btn btn-secondary shadow-sm">
         <i class="fas fa-arrow-left me-1"></i> Kembali
     </a>
     @if(auth()->user()->isAdmin())
-    <button id="btnTambahPantau" class="btn btn-primary shadow-sm">
+    <button id="btnTambahPantau" class="btn btn-primary shadow-sm rounded-pill px-4">
         <i class="fas fa-plus me-1"></i> Tambah Dokumen
     </button>
     @endif
 </div>
 
-{{-- FORM TAMBAH DATA (Disembunyikan default) --}}
+@if(auth()->user()->isAdmin())
 <div id="formDaftarPantau" class="card shadow-sm border-0 mb-4 d-none">
     <div class="card-header bg-white py-3">
         <h6 class="m-0 fw-bold text-primary"><i class="fas fa-plus-circle me-1"></i> Form Tambah Dokumen</h6>
     </div>
     <div class="card-body">
-        {{-- PASTIKAN NAMA FOLDER DISINI SESUAI DENGAN FOLDER ASLI ANDA --}}
-        {{-- Jika folder Anda pakai garis bawah, ubah jadi 'daftar_pantau...' --}}
         @include('daftar-pantau.kepemimpinan.tabs.kepesertaan')
     </div>
 </div>
+@endif
 
-{{-- TABEL DATA --}}
+{{-- ================================================================ --}}
+{{-- 4. TABEL DATA PEMANTAUAN KEPEMIMPINAN                            --}}
+{{-- ================================================================ --}}
 <div class="card shadow-sm border-0 mb-4">
+    
+    {{-- Bagian Header Tabel & Filter Tahun --}}
     <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
         <h6 class="m-0 fw-bold text-primary"><i class="fas fa-table me-1"></i> Riwayat Pemantauan</h6>
+        
+        @php
+            $listTahunDokumen = $kepesertaan->map(function($item) {
+                return \Carbon\Carbon::parse($item->created_at ?? now())->format('Y');
+            })->unique()->sortDesc();
+        @endphp
+
+        <div class="d-flex align-items-center">
+            <label for="filterTahun" class="me-2 mb-0 fw-bold text-muted small"><i class="fas fa-filter"></i> Tahun Input:</label>
+            <select id="filterTahun" class="form-select form-select-sm shadow-sm border-primary text-primary fw-bold" style="width: 140px; border-radius: 8px;">
+                <option value="">Semua Tahun</option>
+                @foreach($listTahunDokumen as $tahun)
+                    <option value="{{ $tahun }}">{{ $tahun }}</option>
+                @endforeach
+            </select>
+        </div>
     </div>
+
+    {{-- Bagian Isi Tabel --}}
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-bordered table-hover align-middle" id="tableDetailPantau">
+            <table class="table table-bordered table-hover align-middle w-100" id="tableDetailPantau" style="font-size: 0.9rem;">
                 <thead class="table-light">
                     <tr>
                         <th width="5%" class="text-center">No</th>
+                        <th>Tahun Input</th> {{-- Hidden Filter Column --}}
                         <th>Jenis Pantau</th>
+                        <th>Deadline</th> 
                         <th>PIC</th>
+                        <th>Indikator Status</th>
                         <th>Status</th>
                         <th>Keterangan</th>
                         <th>Pejabat TTD</th>
-                        <th>Batas Waktu</th>
+                        <th>Batas Waktu</th> 
                         <th>Tujuan</th>
                         <th class="text-center">Lampiran</th>
                         @if(auth()->user()->isAdmin())
-                        <th width="12%" class="text-center">Aksi</th>
+                            <th width="10%" class="text-center">Aksi</th>
                         @endif
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($kepesertaan as $item)
+                    {{-- LOGIKA PEMROSESAN BARIS --}}
+                    @php
+                        // A. Kalkulasi Deadline
+                        $today = \Carbon\Carbon::now()->startOfDay();
+                        $tanggalMulai = \Carbon\Carbon::parse($kelas->tanggal_mulai)->startOfDay();
+                        $diffDays = intval($today->diffInDays($tanggalMulai, false));
+                        $deadline = $diffDays < 0 ? 'Lewat ' . abs($diffDays) . ' Hari' : 'H-' . $diffDays;
+
+                        // B. Smart Detector Status
+                        $isDataLama = in_array($item->keterangan, ['Proses Penyusunan', 'Proses TTD', 'Terkirim', 'Terkonfirmasi']);
+                        $teksStatus = $isDataLama ? $item->keterangan : $item->status_pantau;
+                        $teksCatatan = $isDataLama ? $item->keterangan_dua : $item->keterangan;
+
+                        // C. Penentuan Warna Badge
+                        $indikatorStatus = 'Pending';
+                        $badgeClass = 'bg-warning text-dark';
+                        
+                        if (in_array($teksStatus, ['Proses Penyusunan', 'Proses TTD'])) {
+                            $indikatorStatus = 'Pending';
+                            $badgeClass = 'bg-warning text-dark';
+                        } elseif ($teksStatus == 'Terkirim') {
+                            $indikatorStatus = 'Pengiriman';
+                            $badgeClass = 'bg-info text-dark';
+                        } elseif ($teksStatus == 'Terkonfirmasi') {
+                            $indikatorStatus = 'Selesai';
+                            $badgeClass = 'bg-success';
+                        }
+
+                        // D. Sisa Batas Waktu Dokumen
+                        $displayBatasWaktu = '-';
+                        if ($item->batas_waktu) {
+                            $tglBatas = \Carbon\Carbon::parse($item->batas_waktu)->startOfDay();
+                            $diffBatas = intval($today->diffInDays($tglBatas, false));
+                            $displayBatasWaktu = $diffBatas < 0 ? 'Melebihi Batas' : 'H-' . $diffBatas;
+                        }
+
+                        $tahunInput = \Carbon\Carbon::parse($item->created_at ?? now())->format('Y');
+                    @endphp
+
                     <tr>
                         <td class="text-center">{{ $loop->iteration }}</td>
-                        <td>{{ $item->jenis_pantau }}</td>
-                        <td>{{ $item->pics }}</td>
-                        <td>
-                            @if($item->keterangan == 'Terkonfirmasi')
-                                <span class="badge bg-success">{{ $item->keterangan }}</span>
-                            @elseif($item->keterangan == 'Terkirim')
-                                <span class="badge bg-info">{{ $item->keterangan }}</span>
-                            @elseif($item->keterangan == 'Proses TTD')
-                                <span class="badge bg-warning text-dark">{{ $item->keterangan }}</span>
-                            @else
-                                <span class="badge bg-secondary">{{ $item->keterangan }}</span>
-                            @endif
-                        </td>
-                        <td>{{ $item->keterangan_dua ?? '-' }}</td>
-                        <td>{{ $item->pejabat_ttd }}</td>
-                        <td>
-                            @if($item->batas_waktu)
-                                {{ \Carbon\Carbon::parse($item->batas_waktu)->translatedFormat('d M Y') }}
-                            @else
-                                -
-                            @endif
-                        </td>
+                        <td>{{ $tahunInput }}</td>
+                        
+                        <td class="fw-bold text-dark">{{ $item->jenis_pantau }}</td>
+                        <td><span class="text-danger fw-bold">{{ $deadline }}</span></td>
+                        
+                        {{-- MENAMPILKAN PIC --}}
+                        <td>{{ $item->pic ?? '-' }}</td>
+                        
+                        {{-- INDIKATOR & STATUS --}}
+                        <td><span class="badge {{ $badgeClass }} shadow-sm px-2 py-1">{{ $indikatorStatus }}</span></td>
+                        <td>{{ $teksStatus ?? '-' }}</td> 
+                        <td>{{ $teksCatatan ?? '-' }}</td> 
+                        
+                        <td>{{ $item->pejabat_ttd ?? '-' }}</td>
+                        <td>{{ $displayBatasWaktu }}</td>
                         <td>{{ $item->tujuan }}</td>
+                        
+                        {{-- LAMPIRAN --}}
                         <td class="text-center">
                             @if($item->lampiran)
-                                <a href="{{ asset('storage/' . $item->lampiran) }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                    <i class="fas fa-file-download"></i> Lihat
+                                <a href="{{ asset('storage/' . $item->lampiran) }}" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill">
+                                    <i class="fas fa-file-pdf"></i> Lihat
                                 </a>
                             @else
-                                <span class="text-muted small">Tidak ada</span>
+                                <span class="text-muted small">-</span>
                             @endif
                         </td>
+                        
+                        {{-- AKSI --}}
                         @if(auth()->user()->isAdmin())
                         <td class="text-center">
-                            <a href="{{ route('pantau.kepesertaan.edit', $item->id) }}" class="btn btn-sm btn-warning mb-1" title="Edit">
+                            <a href="{{ route('pantau.kepesertaan.edit', $item->id) }}" class="btn btn-sm btn-warning rounded-circle text-white shadow-sm mb-1" title="Edit">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <form action="{{ route('pantau.kepesertaan.destroy', $item->id) }}" method="POST" class="d-inline">
+                            <form action="{{ route('pantau.kepesertaan.destroy', $item->id) }}" method="POST" class="d-inline form-delete">
                                 @csrf
                                 @method('DELETE')
-                                <button class="btn btn-sm btn-danger btn-delete mb-1" title="Hapus">
+                                <button type="button" class="btn btn-sm btn-danger rounded-circle shadow-sm mb-1 btn-delete" title="Hapus">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </form>
@@ -152,15 +214,26 @@
         </div>
     </div>
 </div>
+
 @endsection
 
+{{-- ================================================================ --}}
+{{-- 5. SCRIPT JAVASCRIPT & DATATABLES                                --}}
+{{-- ================================================================ --}}
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     $(document).ready(function () {
-        $('#tableDetailPantau').DataTable({
+        var table = $('#tableDetailPantau').DataTable({
             language: { url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json" },
             ordering: false,
+            columnDefs: [
+                { targets: [1], visible: false } // Sembunyikan kolom Tahun Input
+            ]
+        });
+
+        $('#filterTahun').on('change', function () {
+            table.column(1).search(this.value).draw();
         });
 
         $('#btnTambahPantau').on('click', function () {

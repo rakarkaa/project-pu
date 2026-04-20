@@ -16,14 +16,16 @@ class DaftarPantauKepesertaanController extends Controller
     public function store(Request $request, $kelasId)
     {
         $request->validate([
-            'jenis_pantau'   => 'required|string',
-            'keterangan'     => 'required|string',
-            'keterangan_dua' => 'nullable|string',
-            'pejabat_ttd'    => 'required|string|in:Kepala Pusat,Kepala BPSDM',
-            'batas_waktu'    => 'nullable|integer|min:0', // <-- UBAH JADI INTEGER
-            'deadline_hari'  => 'nullable|integer',
-            'tujuan'         => 'required|string',
-            'lampiran'       => 'nullable|file|mimes:pdf,doc,docx,jpg,png',
+            'jenis_pantau'  => 'required|string',
+            'status_pantau' => 'required|string', // Menyesuaikan nama dari form Blade baru
+            'keterangan'    => 'required|string',
+            'pejabat_ttd'   => 'required|string|in:Kepala Pusat,Kepala BPSDM',
+            'pic'           => 'required|string', // Validasi input PIC
+            'batas_waktu'   => 'nullable|integer|min:0',
+            'deadline_hari' => 'nullable|integer',
+            'tujuan'        => 'required|array', // Diubah jadi array untuk checkbox
+            'tujuan.*'      => 'string',
+            'lampiran'      => 'nullable|file|mimes:pdf,doc,docx,jpg,png',
         ]);
 
         $kelas = KelasKepemimpinan::findOrFail($kelasId);
@@ -38,17 +40,22 @@ class DaftarPantauKepesertaanController extends Controller
             ? \Carbon\Carbon::now()->addDays((int) $request->batas_waktu)->format('Y-m-d') 
             : null;
 
+        // Gabungkan array tujuan dari checkbox menjadi satu string
+        $tujuanString = $request->has('tujuan') ? implode(', ', $request->tujuan) : null;
+
         DaftarPantauKepesertaan::create([
             'kelas_kepemimpinan_id' => $kelas->id,
+            'total_peserta'         => 0, // Inputan ini tidak ada di form, set default 0
             'jenis_pantau'          => $request->jenis_pantau,
             'deadline_hari'         => 0,
             'deadline_pantau'       => now(),
-            'status_pantau'         => 'pending',
-            'keterangan'            => $request->keterangan,
-            'keterangan_dua'        => $request->keterangan_dua,
+            'status_pantau'         => $request->status_pantau, // Disimpan ke status_pantau
+            'keterangan'            => $request->keterangan,    // Textarea disimpan ke keterangan
+            'keterangan_dua'        => null, // Set null, text-area dialihkan ke 'keterangan'
             'pejabat_ttd'           => $request->pejabat_ttd,
-            'batas_waktu'           => $batasWaktuDate, // <-- SIMPAN TANGGALNYA
-            'tujuan'                => $request->tujuan,
+            'pic'                   => $request->pic, // Menyimpan nilai PIC
+            'batas_waktu'           => $batasWaktuDate, 
+            'tujuan'                => $tujuanString, // Menyimpan hasil implode
             'lampiran'              => $lampiranPath,
         ]);
 
@@ -58,10 +65,12 @@ class DaftarPantauKepesertaanController extends Controller
     public function edit($id)
     {
         $item = DaftarPantauKepesertaan::findOrFail($id);
-        // Panggil master Jenis Pantau untuk form select
-        $jenisPantau = \App\Models\JenisPantau::orderBy('nama_pantau', 'asc')->get();
         
-        return view('daftar-pantau.kepemimpinan.edit', compact('item', 'jenisPantau'));
+        // Panggil data master untuk dropdown
+        $jenisPantau = \App\Models\JenisPantau::orderBy('nama_pantau', 'asc')->get();
+        $pics = \App\Models\Pic::all(); // <-- Pastikan model Pic sudah diload untuk form edit
+        
+        return view('daftar-pantau.kepemimpinan.edit', compact('item', 'jenisPantau', 'pics'));
     }
 
     public function update(Request $request, $id)
@@ -69,13 +78,15 @@ class DaftarPantauKepesertaanController extends Controller
         $data = DaftarPantauKepesertaan::findOrFail($id);
 
         $request->validate([
-            'jenis_pantau'   => 'required|string',
-            'keterangan'     => 'required|string',
-            'keterangan_dua' => 'nullable|string',
-            'pejabat_ttd'    => 'required|string|in:Kepala Pusat,Kepala BPSDM',
-            'batas_waktu'    => 'nullable|integer|min:0', // <-- UBAH JADI INTEGER
-            'tujuan'         => 'required|string',
-            'lampiran'       => 'nullable|file|mimes:pdf,doc,docx,jpg,png',
+            'jenis_pantau'  => 'required|string',
+            'status_pantau' => 'required|string',
+            'keterangan'    => 'required|string',
+            'pejabat_ttd'   => 'required|string|in:Kepala Pusat,Kepala BPSDM',
+            'pic'           => 'required|string',
+            'batas_waktu'   => 'nullable|integer|min:0',
+            'tujuan'        => 'required|array',
+            'tujuan.*'      => 'string',
+            'lampiran'      => 'nullable|file|mimes:pdf,doc,docx,jpg,png',
         ]);
 
         // Konversi angka hari menjadi Tanggal asli
@@ -83,13 +94,17 @@ class DaftarPantauKepesertaanController extends Controller
             ? \Carbon\Carbon::now()->addDays((int) $request->batas_waktu)->format('Y-m-d') 
             : null;
 
+        // Gabungkan array tujuan dari checkbox menjadi satu string
+        $tujuanString = $request->has('tujuan') ? implode(', ', $request->tujuan) : null;
+
         $updateData = [
-            'jenis_pantau'   => $request->jenis_pantau,
-            'keterangan'     => $request->keterangan,
-            'keterangan_dua' => $request->keterangan_dua,
-            'pejabat_ttd'    => $request->pejabat_ttd,
-            'batas_waktu'    => $batasWaktuDate, // <-- UPDATE TANGGALNYA
-            'tujuan'         => $request->tujuan,
+            'jenis_pantau'  => $request->jenis_pantau,
+            'status_pantau' => $request->status_pantau,
+            'keterangan'    => $request->keterangan,
+            'pejabat_ttd'   => $request->pejabat_ttd,
+            'pic'           => $request->pic,
+            'batas_waktu'   => $batasWaktuDate,
+            'tujuan'        => $tujuanString,
         ];
 
         if ($request->hasFile('lampiran')) {
@@ -99,9 +114,6 @@ class DaftarPantauKepesertaanController extends Controller
 
         $data->update($updateData);
 
-        // ==========================================
-        // PERBAIKAN: Ubah return back() menjadi redirect()
-        // ==========================================
         return redirect()->route('daftar-pantau.kepemimpinan.show', $data->kelas_kepemimpinan_id)
             ->with('success', 'Data pemantauan berhasil diupdate!');
     }
@@ -121,5 +133,4 @@ class DaftarPantauKepesertaanController extends Controller
 
         return back()->with('success', 'Data kepesertaan berhasil dihapus');
     }
-
 }
