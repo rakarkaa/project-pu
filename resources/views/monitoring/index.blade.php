@@ -72,12 +72,12 @@
                         <th>Kolom Jenis</th>
                         <th>Kolom Nama Pelatihan</th>
 
-                        <th class="text-start" width="25%">Informasi Kelas</th>
+                        <th class="text-start" width="25%">Nama Pelatihan</th>
                         <th width="15%">Jadwal Pelaksanaan</th>
                         <th width="15%">Rincian Dokumen</th>
                         
                         {{-- KOLOM INDIKATOR PROGRES --}}
-                        <th width="8%"><i class="fas fa-file-signature text-secondary d-block mb-1"></i> Susun </th>
+                        <th width="8%"><i class="fas fa-file-signature text-secondary d-block mb-1"></i> Konsep </th>
                         <th width="8%"><i class="fas fa-pen-nib text-secondary d-block mb-1"></i> Tanda Tangan </th>
                         <th width="8%"><i class="fas fa-paper-plane text-secondary d-block mb-1"></i> Terkirim </th>
                         <th width="8%"><i class="fas fa-check-double text-secondary d-block mb-1"></i> Terkonfirmasi </th>
