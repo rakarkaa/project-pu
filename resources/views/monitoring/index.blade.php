@@ -30,7 +30,7 @@
             $listNamaPelatihan = $semuaPemantauan->pluck('nama_pelatihan')->filter()->unique()->sort();
         @endphp
 
-        {{-- AREA TRIPLE FILTER --}}
+        {{-- AREA FILTER --}}
         <div class="d-flex flex-wrap align-items-center gap-2">
             {{-- Filter Tahun --}}
             <select id="filterTahun" class="form-select form-select-sm shadow-sm border-secondary fw-bold text-secondary" style="width: 130px; border-radius: 8px;">
@@ -72,12 +72,13 @@
                         <th>Kolom Jenis</th>
                         <th>Kolom Nama Pelatihan</th>
 
-                        <th class="text-start" width="25%">Informasi Kelas</th>
+                        {{-- Header Tabel --}}
+                        <th class="text-start" width="25%">Nama Pelatihan</th>
                         <th width="15%">Jadwal Pelaksanaan</th>
                         <th width="15%">Rincian Dokumen</th>
                         
                         {{-- KOLOM INDIKATOR PROGRES --}}
-                        <th width="8%"><i class="fas fa-file-signature text-secondary d-block mb-1"></i> Susun </th>
+                        <th width="8%"><i class="fas fa-file-signature text-secondary d-block mb-1"></i> Konsep </th>
                         <th width="8%"><i class="fas fa-pen-nib text-secondary d-block mb-1"></i> Tanda Tangan </th>
                         <th width="8%"><i class="fas fa-paper-plane text-secondary d-block mb-1"></i> Terkirim </th>
                         <th width="8%"><i class="fas fa-check-double text-secondary d-block mb-1"></i> Terkonfirmasi </th>
@@ -120,8 +121,10 @@
                         <td>{{ $item->jenis_kelas }}</td>
                         <td>{{ $item->nama_pelatihan }}</td>
 
-                        {{-- INFORMASI KELAS (Hanya Nama Pelatihan) --}}
+                        {{-- INFORMASI KELAS --}}
                         <td class="text-start">
+                            <span class="d-none">{{ $item->tanggal_mulai }} | {{ $item->angkatan ?? '' }}</span>
+                            
                             <span class="fw-bold text-dark d-block mb-2">
                                 {{ $item->nama_pelatihan }} 
                             </span>
@@ -148,7 +151,7 @@
                         {{-- RINCIAN DOKUMEN --}}
                         <td class="text-start">
                             <span class="fw-bold text-secondary d-block">{{ $item->jenis_pantau }}</span>
-                            <small class="text-muted">Tujuan: {{ $item->tujuan }}</small>
+                            <small class="text-muted">PIC: {{ $item->pic ?? '-' }}</small>
                         </td>
 
                         {{-- ------------------------------------------------ --}}
@@ -234,16 +237,17 @@
             // Mematikan autoWidth agar lebar kolom dapat diatur manual
             autoWidth: false, 
 
-            // Menggabungkan kolom 'Informasi Kelas' (index 4) lalu kolom 'No' (index 0)
-            rowsGroup: [4, 0], 
+            // Merge Kolom
+            rowsGroup: [4, 5, 0], 
 
             columnDefs: [
                 // Sembunyikan 3 Kolom Filter Pertama
                 { targets: [1, 2, 3], visible: false },
                 
-                // Atur lebar kolom
+                // Atur lebar kolom agar konsisten dan proporsional
                 { targets: 0, orderable: false, width: "3%" }, 
-                { targets: 4, width: "25%" } 
+                { targets: 4, width: "25%" },
+                { targets: 5, width: "15%" }
             ],
             
             // Secara default urutkan tabel berdasarkan Informasi Kelas

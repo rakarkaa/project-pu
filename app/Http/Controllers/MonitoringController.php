@@ -28,6 +28,7 @@ class MonitoringController extends Controller
                     'jenis_kelas'     => 'Kepemimpinan',
                     'jenis_pantau'    => $pantau->jenis_pantau,
                     'tujuan'          => $pantau->tujuan,
+                    'pic'             => $pantau->pic,
                     
                     // Field di bawah ini wajib dikirim agar Smart Detector di Blade tidak error
                     'keterangan'      => $pantau->keterangan,
@@ -52,6 +53,7 @@ class MonitoringController extends Controller
                     'jenis_kelas'     => 'Fungsional',
                     'jenis_pantau'    => $pantau->jenis_pantau,
                     'tujuan'          => $pantau->tujuan,
+                    'pic'             => $pantau->pic,
                     
                     // Field di bawah ini wajib dikirim agar Smart Detector di Blade tidak error
                     'keterangan'      => $pantau->keterangan,
