@@ -2,7 +2,23 @@
 
 @section('content')
 {{-- ================================================================ --}}
-{{-- 1. HEADER HALAMAN                                                --}}
+{{-- 1. PHP LOGIC (DIPINDAHKAN KE ATAS AGAR RAPI)                     --}}
+{{-- ================================================================ --}}
+@php
+    // 1. Ambil data TAHUN dari tanggal_mulai
+    $listTahun = $semuaPemantauan->map(function($item) {
+        return \Carbon\Carbon::parse($item->tanggal_mulai)->format('Y');
+    })->unique()->sortDesc();
+
+    // 2. Ambil data JENIS KELAS
+    $listJenis = $semuaPemantauan->pluck('jenis_kelas')->unique()->sort();
+
+    // 3. Ambil data NAMA PELATIHAN
+    $listPelatihan = $semuaPemantauan->pluck('nama_pelatihan')->unique()->sort();
+@endphp
+
+{{-- ================================================================ --}}
+{{-- 2. HEADER HALAMAN                                                --}}
 {{-- ================================================================ --}}
 <div class="d-flex justify-content-between align-items-center mt-4 mb-2">
     <div>
@@ -14,54 +30,44 @@
 <div class="card shadow-sm border-0 mb-5">
     
     {{-- ================================================================ --}}
-    {{-- 2. BAGIAN FILTER DINAMIS                                         --}}
+    {{-- 3. AREA FILTER MINIMALIS (SEJAJAR & COMPACT)                     --}}
     {{-- ================================================================ --}}
-<div class="card-header bg-white py-3 border-bottom d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
-        <h6 class="mb-0 fw-bold text-primary"><i class="fas fa-satellite-dish me-2"></i> Status Dokumen Terkini</h6>
-        
-        {{-- PINDAHKAN LOGIKA PHP KE SINI (DI ATAS FILTER) --}}
-        @php
-            // 1. Ambil data TAHUN dari tanggal_mulai
-            $listTahun = $semuaPemantauan->map(function($item) {
-                return \Carbon\Carbon::parse($item->tanggal_mulai)->format('Y');
-            })->unique()->sortDesc();
-
-            // 2. Ambil data JENIS KELAS
-            $listJenis = $semuaPemantauan->pluck('jenis_kelas')->unique()->sort();
-
-            // 3. Ambil data NAMA PELATIHAN
-            $listPelatihan = $semuaPemantauan->pluck('nama_pelatihan')->unique()->sort();
-        @endphp
+    <div class="card-header bg-white py-3 border-bottom d-flex flex-column flex-xl-row justify-content-between align-items-xl-center gap-3">
+        <h6 class="m-0 fw-bold text-dark text-nowrap"><i class="fas fa-satellite-dish me-2 text-primary"></i> Status Dokumen Terkini</h6>
 
         {{-- AREA FILTER --}}
-        <div class="d-flex flex-wrap align-items-center gap-2">
-            <label class="me-2 mb-0 fw-bold text-muted small"><i class="fas fa-filter"></i> Filter Periode:</label>
-            
-            <div class="input-group input-group-sm" style="width: 280px;">
-                <select id="filterTahunAwal" class="form-select border-primary text-primary fw-bold">
-                    <option value="">Tahun Awal</option>
+        <div class="d-flex flex-wrap align-items-center gap-2 justify-content-xl-end">
+            <span class="text-muted small fw-bold me-1"><i class="fas fa-filter"></i> Filter:</span>
+
+            {{-- Rentang Tahun --}}
+            <div class="input-group input-group-sm shadow-sm" style="width: 220px;">
+                <span class="input-group-text bg-white text-muted border-end-0"><i class="fas fa-calendar-alt"></i></span>
+                <select id="filterTahunAwal" class="form-select border-start-0 ps-0 text-dark fw-semibold" style="cursor:pointer;">
+                    <option value="">Awal</option>
                     @foreach($listTahun as $tahun)
                         <option value="{{ $tahun }}">{{ $tahun }}</option>
                     @endforeach
                 </select>
-                <span class="input-group-text bg-primary text-white border-primary">-</span>
-                <select id="filterTahunAkhir" class="form-select border-primary text-primary fw-bold">
-                    <option value="">Tahun Akhir</option>
+                <span class="input-group-text bg-light text-muted border-start-0 border-end-0 px-2">-</span>
+                <select id="filterTahunAkhir" class="form-select border-start-0 ps-1 text-dark fw-semibold" style="cursor:pointer;">
+                    <option value="">Akhir</option>
                     @foreach($listTahun as $tahun)
                         <option value="{{ $tahun }}">{{ $tahun }}</option>
                     @endforeach
                 </select>
             </div>
 
-            <select id="filterJenis" class="form-select form-select-sm border-primary text-primary fw-bold" style="width: 150px;">
-                <option value="">Semua Jenis</option>
+            {{-- Jenis Dokumen --}}
+            <select id="filterJenis" class="form-select form-select-sm shadow-sm text-dark fw-semibold" style="width: 150px; cursor:pointer;">
+                <option value="">📚 Semua Jenis</option>
                 @foreach($listJenis as $jenis)
                     <option value="{{ $jenis }}">{{ $jenis }}</option>
                 @endforeach
             </select>
 
-            <select id="filterNamaPelatihan" class="form-select form-select-sm border-primary text-primary fw-bold" style="width: 200px;">
-                <option value="">Semua Pelatihan</option>
+            {{-- Nama Pelatihan --}}
+            <select id="filterNamaPelatihan" class="form-select form-select-sm shadow-sm text-dark fw-semibold" style="width: 220px; cursor:pointer;">
+                <option value="">🎓 Semua Pelatihan</option>
                 @foreach($listPelatihan as $nama)
                     <option value="{{ $nama }}">{{ $nama }}</option>
                 @endforeach
@@ -70,7 +76,7 @@
     </div>
     
     {{-- ================================================================ --}}
-    {{-- 3. TABEL MONITORING UTAMA                                        --}}
+    {{-- 4. TABEL MONITORING UTAMA                                        --}}
     {{-- ================================================================ --}}
     <div class="card-body">
         <div class="table-responsive">
@@ -85,7 +91,7 @@
                         <th>Kolom Nama Pelatihan</th>
 
                         {{-- Header Tabel --}}
-                        <th class="text-start" width="25%">Nama Pelatihan</th>
+                        <th class="text-start" width="25%">Informasi Kelas</th>
                         <th width="15%">Jadwal Pelaksanaan</th>
                         <th width="15%">Rincian Dokumen</th>
                         
@@ -214,7 +220,7 @@
 </div>
 
 {{-- ================================================================ --}}
-{{-- 4. GAYA (CSS) TAMBAHAN                                           --}}
+{{-- 5. GAYA (CSS) TAMBAHAN                                           --}}
 {{-- ================================================================ --}}
 @push('styles')
 <style>
@@ -227,13 +233,19 @@
     .icon-pop:hover {
         transform: scale(1.2);
     }
+    
+    /* Percantik tampilan select agar lebih rapi */
+    .form-select:focus {
+        border-color: #bac8f3;
+        box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.1);
+    }
 </style>
 @endpush
 
 @endsection
 
 {{-- ================================================================ --}}
-{{-- 5. SCRIPT JAVASCRIPT & DATATABLES                                --}}
+{{-- 6. SCRIPT JAVASCRIPT & DATATABLES                                --}}
 {{-- ================================================================ --}}
 @push('scripts')
 {{-- Panggil DataTables RowsGroup untuk menggabungkan baris yang sama --}}
@@ -281,7 +293,7 @@
             }
         });
 
-       // --- SCRIPT EKSEKUSI FILTER ---
+        // --- SCRIPT EKSEKUSI FILTER ---
         // Fungsi Filter Rentang Tahun Kustom
         $.fn.dataTable.ext.search.push(
             function( settings, data, dataIndex ) {
