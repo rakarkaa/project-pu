@@ -21,6 +21,7 @@ use App\Http\Controllers\PolaPenyelenggaraanController;
 use App\Http\Controllers\PicController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\JenisPantauController;
+use App\Http\Controllers\TujuanPenerimaSuratController;
 
 /*
 |--------------------------------------------------------------------------
@@ -79,6 +80,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('pola-penyelenggaraan', PolaPenyelenggaraanController::class);
 
     Route::resource('pic', PicController::class);
+    
+    // Route untuk CRUD Tujuan Penerima Surat
+    Route::resource('tujuan-surat', TujuanPenerimaSuratController::class);
 
     // ------------------------------------------------------------------
     // KELAS & DAFTAR PANTAU (Halaman Tampil)

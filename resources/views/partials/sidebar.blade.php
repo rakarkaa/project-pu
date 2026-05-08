@@ -51,11 +51,15 @@
                         </a>
 
                         <a class="nav-link" href="{{ route('pola-penyelenggaraan.index') }}">
-                            Pola Penyelenggaraan
+                            Master Pola Penyelenggaraan
                         </a>
 
                         <a class="nav-link" href="{{ route('pic.index') }}">
-                            Data PIC
+                            Master Data PIC
+                        </a>
+
+                        <a class="nav-link" href="{{ route('tujuan-surat.index') }}">
+                            Master Tujuan Penerima Surat
                         </a>
 
                     </nav>

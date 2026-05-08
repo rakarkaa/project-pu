@@ -1,4 +1,6 @@
 @if(auth()->user()->isAdmin())
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <form
     action="{{ route('pantau.fungsional.kepesertaan.store', $kelas->id) }}"
     method="POST"
@@ -23,25 +25,26 @@
         </div>
 
         {{-- ========================================== --}}
-        {{-- 2. TUJUAN (CHECKBOX MULTIPLE)              --}}
+        {{-- 2. TUJUAN (SELECT2 MULTI-SELECT)           --}}
         {{-- ========================================== --}}
         <div class="col-md-6 mb-3">
-            <label class="form-label fw-semibold">Tujuan <small class="text-muted fw-normal">(Bisa pilih lebih dari satu)</small></label>
-            <div class="d-flex flex-wrap gap-3 mt-1">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="tujuan[]" value="Sekretaris" id="tujuan_sekretaris">
-                    <label class="form-check-label" for="tujuan_sekretaris">Sekretaris</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="tujuan[]" value="Biro" id="tujuan_biro">
-                    <label class="form-check-label" for="tujuan_biro">Biro</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="tujuan[]" value="Unit Kerja" id="tujuan_unit_kerja">
-                    <label class="form-check-label" for="tujuan_unit_kerja">Unit Kerja</label>
-                </div>
-            </div>
+            <label class="form-label fw-semibold">Tujuan <small class="text-muted fw-normal">(Pilih satu atau lebih)</small></label>
+            
+            {{-- Memanggil CSS Select2 --}}
+            <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+            <select name="tujuan[]" id="selectTujuanCreate" class="form-select" multiple="multiple" required style="width: 100%;">
+                @php
+                    $listTujuanMaster = \App\Models\TujuanPenerimaSurat::all();
+                @endphp
+                @foreach($listTujuanMaster as $tujuan)
+                    <option value="{{ $tujuan->nama_unitkerja }}">
+                        {{ $tujuan->nama_unitorganisasi }} - {{ $tujuan->nama_unitkerja }}
+                    </option>
+                @endforeach
+            </select>
         </div>
+
 
         {{-- ========================================== --}}
         {{-- 3. PEJABAT TTD                             --}}
@@ -118,8 +121,35 @@
     {{-- TOMBOL SIMPAN --}}
     <div class="text-end mt-2">
         <button class="btn btn-primary px-4" type="submit">
-            <i class="fas fa-save me-1"></i> Simpan Kepesertaan
+            <i class="fas fa-save me-1"></i> Simpan
         </button>
     </div>
 </form>
+
+@push('scripts')
+{{-- Ganti script lama dengan ini. Jangan panggil jquery.min.js lagi di sini --}}
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Inisialisasi Select2 dengan ID yang benar: selectTujuanCreate
+        // Serta tambahkan width: '100%' agar tidak gepeng saat form muncul
+        $('#selectTujuanCreate').select2({
+            placeholder: "-- Pilih Tujuan --",
+            allowClear: true,
+            width: '100%' 
+        });
+
+        // Logika tambahan: Jika form dibuka, pastikan Select2 menyesuaikan ukuran
+        $('#btnTambahPantau').on('click', function() {
+            setTimeout(function() {
+                $('#selectTujuanCreate').select2({
+                    placeholder: "-- Pilih Tujuan --",
+                    allowClear: true,
+                    width: '100%'
+                });
+            }, 100);
+        });
+    });
+</script>
+@endpush
 @endif

@@ -70,7 +70,10 @@ class DaftarPantauKepesertaanController extends Controller
         $jenisPantau = \App\Models\JenisPantau::orderBy('nama_pantau', 'asc')->get();
         $pics = \App\Models\Pic::all(); // <-- Pastikan model Pic sudah diload untuk form edit
         
-        return view('daftar-pantau.kepemimpinan.edit', compact('item', 'jenisPantau', 'pics'));
+        // TAMBAHKAN INI: Mengambil data master tujuan
+        $listTujuan = \App\Models\TujuanPenerimaSurat::all();
+
+        return view('daftar-pantau.kepemimpinan.edit', compact('item', 'jenisPantau', 'pics', 'listTujuan'));
     }
 
     public function update(Request $request, $id)
