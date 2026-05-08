@@ -118,7 +118,7 @@
     {{-- TOMBOL SIMPAN --}}
     <div class="text-end mt-2">
         <button class="btn btn-primary px-4" type="submit">
-            <i class="fas fa-save me-1"></i> Simpan Kepesertaan
+            <i class="fas fa-save me-1"></i> Simpan
         </button>
     </div>
 </form>

@@ -70,7 +70,10 @@ class DaftarPantauKepesertaanFungController extends Controller
         // Pastikan variabel $pics juga dikirim ke view edit jika dibutuhkan
         $pics = \App\Models\Pic::all(); // Sesuaikan dengan model PIC kamu
         
-        return view('daftar-pantau.fungsional.edit', compact('item', 'jenisPantau', 'pics'));
+        // Mengambil data master tujuan untuk dropdown
+        $listTujuan = \App\Models\TujuanPenerimaSurat::all();
+
+        return view('daftar-pantau.fungsional.edit', compact('item', 'jenisPantau', 'pics', 'listTujuan'));
     }
 
     /**

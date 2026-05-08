@@ -16,41 +16,53 @@
     {{-- ================================================================ --}}
     {{-- 2. BAGIAN FILTER DINAMIS                                         --}}
     {{-- ================================================================ --}}
-    <div class="card-header bg-white py-3 border-bottom d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+<div class="card-header bg-white py-3 border-bottom d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
         <h6 class="mb-0 fw-bold text-primary"><i class="fas fa-satellite-dish me-2"></i> Status Dokumen Terkini</h6>
         
-        {{-- LOGIKA PHP UNTUK MENYIAPKAN DATA DROPDOWN FILTER --}}
+        {{-- PINDAHKAN LOGIKA PHP KE SINI (DI ATAS FILTER) --}}
         @php
             // 1. Ambil data TAHUN dari tanggal_mulai
             $listTahun = $semuaPemantauan->map(function($item) {
                 return \Carbon\Carbon::parse($item->tanggal_mulai)->format('Y');
             })->unique()->sortDesc();
 
-            // 2. Ambil data Nama Pelatihan (Pengganti Angkatan)
-            $listNamaPelatihan = $semuaPemantauan->pluck('nama_pelatihan')->filter()->unique()->sort();
+            // 2. Ambil data JENIS KELAS
+            $listJenis = $semuaPemantauan->pluck('jenis_kelas')->unique()->sort();
+
+            // 3. Ambil data NAMA PELATIHAN
+            $listPelatihan = $semuaPemantauan->pluck('nama_pelatihan')->unique()->sort();
         @endphp
 
-        {{-- AREA TRIPLE FILTER --}}
+        {{-- SEKARANG VARIABEL $listTahun SUDAH TERDEFINISI DAN BISA DIGUNAKAN --}}
         <div class="d-flex flex-wrap align-items-center gap-2">
-            {{-- Filter Tahun --}}
-            <select id="filterTahun" class="form-select form-select-sm shadow-sm border-secondary fw-bold text-secondary" style="width: 130px; border-radius: 8px;">
-                <option value="">🗓️ Semua Tahun</option>
-                @foreach($listTahun as $tahun)
-                    <option value="{{ $tahun }}">{{ $tahun }}</option>
+            <label class="me-2 mb-0 fw-bold text-muted small"><i class="fas fa-filter"></i> Filter Periode:</label>
+            
+            <div class="input-group input-group-sm" style="width: 280px;">
+                <select id="filterTahunAwal" class="form-select border-primary text-primary fw-bold">
+                    <option value="">Tahun Awal</option>
+                    @foreach($listTahun as $tahun)
+                        <option value="{{ $tahun }}">{{ $tahun }}</option>
+                    @endforeach
+                </select>
+                <span class="input-group-text bg-primary text-white border-primary">-</span>
+                <select id="filterTahunAkhir" class="form-select border-primary text-primary fw-bold">
+                    <option value="">Tahun Akhir</option>
+                    @foreach($listTahun as $tahun)
+                        <option value="{{ $tahun }}">{{ $tahun }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <select id="filterJenis" class="form-select form-select-sm border-primary text-primary fw-bold" style="width: 150px;">
+                <option value="">Semua Jenis</option>
+                @foreach($listJenis as $jenis)
+                    <option value="{{ $jenis }}">{{ $jenis }}</option>
                 @endforeach
             </select>
 
-            {{-- Filter Jenis Kelas --}}
-            <select id="filterJenis" class="form-select form-select-sm shadow-sm border-secondary fw-bold text-secondary" style="width: 160px; border-radius: 8px;">
-                <option value="">📚 Semua Jenis</option>
-                <option value="Kepemimpinan">Kepemimpinan</option>
-                <option value="Fungsional">Fungsional</option>
-            </select>
-
-            {{-- Filter Nama Pelatihan --}}
-            <select id="filterNamaPelatihan" class="form-select form-select-sm shadow-sm border-secondary fw-bold text-secondary" style="width: 220px; border-radius: 8px;">
-                <option value="">🎓 Semua Pelatihan</option>
-                @foreach($listNamaPelatihan as $nama)
+            <select id="filterNamaPelatihan" class="form-select form-select-sm border-primary text-primary fw-bold" style="width: 200px;">
+                <option value="">Semua Pelatihan</option>
+                @foreach($listPelatihan as $nama)
                     <option value="{{ $nama }}">{{ $nama }}</option>
                 @endforeach
             </select>
@@ -265,12 +277,31 @@
             }
         });
 
-        // --- SCRIPT EKSEKUSI FILTER ---
-        $('#filterTahun').on('change', function () {
-            var val = $.fn.dataTable.util.escapeRegex($(this).val());
-            table.column(1).search(val ? '^' + val + '$' : '', true, false).draw();
+       // --- SCRIPT EKSEKUSI FILTER ---
+        // Fungsi Filter Rentang Tahun Kustom
+        $.fn.dataTable.ext.search.push(
+            function( settings, data, dataIndex ) {
+                var min = parseInt( $('#filterTahunAwal').val(), 10 );
+                var max = parseInt( $('#filterTahunAkhir').val(), 10 );
+                var year = parseFloat( data[1] ) || 0; // Kolom index 1 adalah Tahun
+
+                if ( ( isNaN( min ) && isNaN( max ) ) ||
+                     ( isNaN( min ) && year <= max ) ||
+                     ( min <= year   && isNaN( max ) ) ||
+                     ( min <= year   && year <= max ) )
+                {
+                    return true;
+                }
+                return false;
+            }
+        );
+
+        // Listener untuk perubahan dropdown tahun
+        $('#filterTahunAwal, #filterTahunAkhir').on('change', function () {
+            table.draw();
         });
 
+        // Listener filter lainnya tetap dipertahankan
         $('#filterJenis').on('change', function () {
             var val = $.fn.dataTable.util.escapeRegex($(this).val());
             table.column(2).search(val ? '^' + val + '$' : '', true, false).draw();
