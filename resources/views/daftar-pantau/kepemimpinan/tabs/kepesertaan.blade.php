@@ -26,21 +26,20 @@
         {{-- 2. TUJUAN (CHECKBOX MULTIPLE)              --}}
         {{-- ========================================== --}}
         <div class="col-md-6 mb-3">
-            <label class="form-label fw-semibold">Tujuan <small class="text-muted fw-normal">(Bisa pilih lebih dari satu)</small></label>
-            <div class="d-flex flex-wrap gap-3 mt-1">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="tujuan[]" value="Sekretaris" id="tujuan_sekretaris">
-                    <label class="form-check-label" for="tujuan_sekretaris">Sekretaris</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="tujuan[]" value="Biro" id="tujuan_biro">
-                    <label class="form-check-label" for="tujuan_biro">Biro</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="tujuan[]" value="Unit Kerja" id="tujuan_unit_kerja">
-                    <label class="form-check-label" for="tujuan_unit_kerja">Unit Kerja</label>
-                </div>
-            </div>
+            <label class="form-label fw-semibold">Tujuan <small class="text-muted fw-normal">(Pilih satu atau lebih)</small></label>
+            
+            <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+            <select name="tujuan[]" id="selectTujuanCreateKep" class="form-select" multiple="multiple" required style="width: 100%;">
+                @php
+                    $listTujuanMaster = \App\Models\TujuanPenerimaSurat::all();
+                @endphp
+                @foreach($listTujuanMaster as $tujuan)
+                    <option value="{{ $tujuan->nama_unitkerja }}">
+                        {{ $tujuan->nama_unitorganisasi }} - {{ $tujuan->nama_unitkerja }}
+                    </option>
+                @endforeach
+            </select>
         </div>
 
         {{-- ========================================== --}}
@@ -122,4 +121,27 @@
         </button>
     </div>
 </form>
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Inisialisasi Select2
+        function initSelect2() {
+            $('#selectTujuanCreateKep').select2({
+                placeholder: "-- Pilih Tujuan --",
+                allowClear: true,
+                width: '100%'
+            });
+        }
+
+        initSelect2();
+
+        // Agar tidak error saat form (d-none) dimunculkan
+        $('#btnTambahPantau').on('click', function() {
+            setTimeout(initSelect2, 100);
+        });
+    });
+</script>
+@endpush
 @endif

@@ -48,21 +48,23 @@
                 </div>
 
                 {{-- 2. TUJUAN (CHECKBOX MULTIPLE) --}}
-                <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold">Tujuan <small class="text-muted fw-normal">(Bisa pilih lebih dari satu)</small></label>
-                    @php
-                        // Memastikan data tujuan diproses sebagai array untuk pengecekan checked
-                        $tujuanTersimpan = is_array($item->tujuan) ? $item->tujuan : explode(', ', $item->tujuan);
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Tujuan <small class="text-muted fw-normal">(Pilih satu atau lebih)</small></label>
+                    
+                    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+                    @php 
+                        $tujuanTersimpan = explode(', ', $item->tujuan ?? ''); 
                     @endphp
-                    <div class="d-flex flex-wrap gap-3 mt-1">
-                        @foreach(['Sekretaris', 'Biro', 'Unit Kerja'] as $tujuan)
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="tujuan[]" value="{{ $tujuan }}" id="edit_{{ $tujuan }}"
-                                    {{ in_array($tujuan, $tujuanTersimpan) ? 'checked' : '' }}>
-                                <label class="form-check-label" for="edit_{{ $tujuan }}">{{ $tujuan }}</label>
-                            </div>
+                    
+                    <select name="tujuan[]" id="selectTujuanEditKep" class="form-select border-primary" multiple="multiple" required style="width: 100%;">
+                        @foreach($listTujuan as $tujuan)
+                            <option value="{{ $tujuan->nama_unitkerja }}" 
+                                {{ in_array($tujuan->nama_unitkerja, $tujuanTersimpan) ? 'selected' : '' }}>
+                                {{ $tujuan->nama_unitorganisasi }} - {{ $tujuan->nama_unitkerja }}
+                            </option>
                         @endforeach
-                    </div>
+                    </select>
                 </div>
 
                 {{-- 3. PEJABAT TTD --}}
@@ -141,4 +143,17 @@
         </form>
     </div>
 </div>
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#selectTujuanEditKep').select2({
+            placeholder: "-- Pilih Tujuan --",
+            allowClear: true,
+            width: '100%'
+        });
+    });
+</script>
+@endpush
 @endsection
