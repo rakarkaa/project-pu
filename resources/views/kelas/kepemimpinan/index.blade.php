@@ -25,13 +25,12 @@
                 <thead class="table-light text-center">
                     <tr>
                         <th width="5%">No</th>
-                        {{-- KOLOM ANGKATAN BARU --}}
-                        <th width="10%">Angkatan</th>
-                        <th>Total Peserta</th>
                         <th class="text-start">Nama Pelatihan</th>
+                        <th width="10%">Angkatan</th>
                         <th>Balai</th>
                         <th>Tanggal Mulai</th>
                         <th>Tanggal Selesai</th>
+                        <th>Total Peserta</th>
                         @if(auth()->user()->isAdmin())
                             <th width="12%">Aksi</th>
                         @endif
@@ -42,12 +41,10 @@
                     <tr class="text-center">
                         <td>{{ $loop->iteration }}</td>
                         
-                        {{-- DATA ANGKATAN BARU --}}
-                        <td class="fw-bold text-primary">{{ $item->angkatan ?? '-' }}</td>
-
-                        <td class="fw-bold text-dark">{{ $item->total_peserta ?? '-' }}</td>
-                        
                         <td class="text-start fw-bold text-dark">{{ $item->pelatihan->nama_pelatihan ?? '-' }}</td>
+                        
+                        <td class="fw-bold text-primary">{{ $item->angkatan ?? '-' }}</td>
+                        
                         <td><span class="text-secondary"><i class="fas fa-building me-1"></i> {{ $item->balai }}</span></td>
                         
                         <td>
@@ -56,12 +53,15 @@
                                 {{ \Carbon\Carbon::parse($item->tanggal_mulai)->translatedFormat('d M Y') }}
                             </span>
                         </td>
+                        
                         <td>
                             <span class="badge bg-light text-dark border px-2 py-1">
                                 <i class="fas fa-calendar-check text-muted me-1"></i> 
                                 {{ \Carbon\Carbon::parse($item->tanggal_selesai)->translatedFormat('d M Y') }}
                             </span>
                         </td>
+
+                        <td class="fw-bold text-dark">{{ $item->total_peserta ?? '-' }}</td>
 
                         @if(auth()->user()->isAdmin())
                         <td>
